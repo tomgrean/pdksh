@@ -819,6 +819,18 @@ reset_comp_state(void)
 {
 	memset(&completion_state, 0, sizeof(completion_state));
 }
+static const char*
+get_next_opt_candi(const char *str, int *lenp) {
+	while (*str && *lenp > 0) {
+		++str;
+		--*lenp;
+	}
+	++str;
+	if (--*lenp <= 0) {
+		return NULL;
+	}
+	return str;
+}
 static int
 deal_with_part(const char *buf, int len)
 {
@@ -830,7 +842,53 @@ deal_with_part(const char *buf, int len)
 	strncpy(opt, buf, len);
 	opt[len] = '\0';
 
-	printf("get part=%s\n", opt);
+	printf("==%s==%d\n", buf, len);
+	switch (completion_state.state) {
+	case COMP_STATE_INIT:
+		completion_state.cmd_info = tsearch(&completes, opt, hash(opt));
+		if (completion_state.cmd_info) {
+		   	if ('C' != completion_state.cmd_info->type) {
+				completion_state.cmd = str_save(opt, ATEMP);
+				completion_state.state = COMP_STATE_CMD;
+			}
+		} else {
+			completion_state.state = COMP_STATE_CMD;
+			completion_state.cmd = str_save(opt, ATEMP);
+		}
+		break;
+	case COMP_STATE_CMD:
+	case COMP_STATE_USTR:
+		if (completion_state.cmd_info) {
+			int new_state = COMP_STATE_USTR;
+			const char *cmdl = completion_state.cmd_info->val.s;
+			int left = completion_state.cmd_info->index;
+
+			for (; cmdl; cmdl = get_next_opt_candi(cmdl, &left)) {
+				char token = *cmdl;
+				if (':' == token || '@' == token) {
+					++cmdl;
+					--left;
+				}
+				printf("in:%s, can=%s, len=%d\n", opt, cmdl, len);
+				if (!strncmp(opt, cmdl, len)) {
+					if (':' == token) {
+						new_state = COMP_STATE_UFILE;
+					} else if ('@' == token) {
+						new_state = COMP_STATE_UCMD;
+					}
+					break;
+				}
+			}
+			completion_state.state = new_state;
+		}
+		break;
+	case COMP_STATE_FILE:
+		return 0;
+	case COMP_STATE_UCMD:
+	case COMP_STATE_UFILE:
+		completion_state.state = COMP_STATE_USTR;
+		break;
+	}
 	return 0;
 }
 static int
@@ -841,14 +899,16 @@ parse_input_str(const char *buf, const char *max)
 
 	for (end = buf; end <= max; end++) {
 		if (isspace(*end)) {
-			space_flag = 1;
-		} else {
-			if (space_flag) {
+			if (!space_flag) {
 				ret = deal_with_part(buf, end - buf);
 				if (ret)
 					return ret;
-				space_flag = 0;
 			}
+			space_flag = 1;
+		} else {
+			if (space_flag)
+				buf = end;
+			space_flag = 0;
 		}
 	}
 	return 0;
@@ -862,13 +922,56 @@ parse_input_str(const char *buf, const char *max)
  * 4. end of parser, check completion type. do the corresponding complete func.
  */
 static int
-x_parameter_glob(const char *buf, const char *str, int slen, char ***words, int *is_command)
+x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int *is_command)
 {
 	int ret;
+	XPtrV w;
 
 	reset_comp_state();
 	ret = parse_input_str(buf, str);
 
+	if (ret >= 0) {
+		printf("completion state:%d, cmd=%s\n", completion_state.state, completion_state.cmd);
+		switch (completion_state.state) {
+		case COMP_STATE_INIT:
+		case COMP_STATE_UCMD:
+			*is_command = 1;
+			return 0;
+			break;
+		case COMP_STATE_FILE:
+		case COMP_STATE_UFILE:
+			return 0;
+			break;
+		case COMP_STATE_CMD:
+		case COMP_STATE_USTR:
+			if (completion_state.cmd_info) {
+				const char *p = completion_state.cmd_info->val.s;
+				int left = completion_state.cmd_info->index;
+				XPinit(w, 16);
+				for (; p; p = get_next_opt_candi(p, &left)) {
+					if (':' == *p || '@' == *p) {
+						++p;
+						--left;
+					}
+					if (!strncmp(p, str, slen)) {
+						XPput(w, str_save(p, ATEMP));
+					}
+				}
+				left = XPsize(w);
+				if (left <= 0) {
+					*wordsp = NULL;
+					XPfree(w);
+					return -1;
+				}
+				XPput(w, NULL);
+				*wordsp = (char**)XPclose(w);
+				return left;
+			}
+			break;
+		default:
+			return -1;
+		}
+	}
 	return ret;
 }
 

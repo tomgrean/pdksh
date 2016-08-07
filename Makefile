@@ -20,7 +20,7 @@ CFLAGS = -g -O
 LDSTATIC = 
 LDFLAGS = 
 
-SHELL_PROG = ksh
+SHELL_PROG = kash
 
 prefix = /usr/local
 exec_prefix = ${prefix}
