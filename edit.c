@@ -733,29 +733,7 @@ x_locate_word(const char *buf, int buflen, int pos, int *startp,
 			end++;
 	}
 
-	if (is_commandp) {
-		int iscmd;
-
-		/* Figure out if this is a command */
-		for (p = start - 1; p >= 0 && isspace(buf[p]); p--)
-			;
-
-		iscmd = p < 0 || strchr(";|&()`", buf[p]);
-		if (iscmd) {
-			/* If command has a /, path, etc. is not searched;
-			 * only current directory is searched, which is just
-			 * like file globbing.
-			 */
-			for (p = start; p < end; p++)
-				if (ISDIRSEP(buf[p]))
-					break;
-			iscmd = p == end;
-		}
-		*is_commandp = iscmd;
-	}
-
 	*startp = start;
-
 	return end - start;
 }
 #ifdef KSH_COMPLETE
@@ -842,7 +820,6 @@ deal_with_part(const char *buf, int len)
 	strncpy(opt, buf, len);
 	opt[len] = '\0';
 
-	//printf("==%s==%d\n", buf, len);
 	switch (completion_state.state) {
 	case COMP_STATE_INIT:
 		completion_state.cmd_info = tsearch(&completes, opt, hash(opt));
@@ -869,7 +846,6 @@ deal_with_part(const char *buf, int len)
 					++cmdl;
 					--left;
 				}
-				//printf("in:%s, can=%s, len=%d\n", opt, cmdl, len);
 				if (!strncmp(opt, cmdl, len)) {
 					if (':' == token) {
 						new_state = COMP_STATE_UFILE;
@@ -922,7 +898,7 @@ parse_input_str(const char *buf, const char *max)
  * 4. end of parser, check completion type. do the corresponding complete func.
  */
 static int
-x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int *is_command)
+x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int *is_commandp)
 {
 	int ret;
 	XPtrV w;
@@ -931,16 +907,13 @@ x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int
 	ret = parse_input_str(buf, str);
 
 	if (ret >= 0) {
-		//printf("completion state:%d, cmd=%s\n", completion_state.state, completion_state.cmd);
 		switch (completion_state.state) {
 		case COMP_STATE_INIT:
 		case COMP_STATE_UCMD:
-			*is_command = 1;
-			return 0;
+			*is_commandp = 1;
 			break;
 		case COMP_STATE_FILE:
 		case COMP_STATE_UFILE:
-			return 0;
 			break;
 		case COMP_STATE_CMD:
 		case COMP_STATE_USTR:
@@ -961,6 +934,7 @@ x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int
 				if (left <= 0) {
 					*wordsp = NULL;
 					XPfree(w);
+					*is_commandp = 0;
 					return -1;
 				}
 				XPput(w, NULL);
@@ -969,9 +943,22 @@ x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int
 			}
 			break;
 		default:
+			*is_commandp = 0;
 			return -1;
 		}
 	}
+	if (*is_commandp) {
+		int i;
+		/* If command has a /, path, etc. is not searched;
+		 * only current directory is searched, which is just
+		 * like file globbing.
+		 */
+		for (i = 0; i < slen; i++)
+			if (ISDIRSEP(str[i]))
+				break;
+		*is_commandp = (i == slen);
+	}
+
 	return ret;
 }
 
