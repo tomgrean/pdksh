@@ -476,11 +476,11 @@ c_trap(char **wp)
 #endif
 
 		for (p = sigtraps, i = SIGNALS+1; --i >= 0; p++) {
-			if (p->trap == NULL)
+			if (p->trap == NULL) {
 #if 0/*defined but not used*/
 				anydfl = 1;
 #endif
-			else {
+			} else {
 				shprintf("trap -- ");
 				print_value_quoted(p->trap);
 				shprintf(" %s\n", p->name);

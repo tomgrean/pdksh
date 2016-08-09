@@ -709,7 +709,6 @@ static int
 x_locate_word(const char *buf, int buflen, int pos, int *startp,
     int *is_commandp)
 {
-	int p;
 	int start, end;
 
 	/* Bad call?  Probably should report error */
