@@ -842,7 +842,7 @@ deal_with_part(const char *buf, int len)
 	strncpy(opt, buf, len);
 	opt[len] = '\0';
 
-	printf("==%s==%d\n", buf, len);
+	//printf("==%s==%d\n", buf, len);
 	switch (completion_state.state) {
 	case COMP_STATE_INIT:
 		completion_state.cmd_info = tsearch(&completes, opt, hash(opt));
@@ -869,7 +869,7 @@ deal_with_part(const char *buf, int len)
 					++cmdl;
 					--left;
 				}
-				printf("in:%s, can=%s, len=%d\n", opt, cmdl, len);
+				//printf("in:%s, can=%s, len=%d\n", opt, cmdl, len);
 				if (!strncmp(opt, cmdl, len)) {
 					if (':' == token) {
 						new_state = COMP_STATE_UFILE;
@@ -931,7 +931,7 @@ x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int
 	ret = parse_input_str(buf, str);
 
 	if (ret >= 0) {
-		printf("completion state:%d, cmd=%s\n", completion_state.state, completion_state.cmd);
+		//printf("completion state:%d, cmd=%s\n", completion_state.state, completion_state.cmd);
 		switch (completion_state.state) {
 		case COMP_STATE_INIT:
 		case COMP_STATE_UCMD:
