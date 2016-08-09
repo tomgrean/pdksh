@@ -471,11 +471,15 @@ c_trap(char **wp)
 	wp += builtin_opt.optind;
 
 	if (*wp == NULL) {
+#if 0/*defined but not used*/
 		int anydfl = 0;
+#endif
 
 		for (p = sigtraps, i = SIGNALS+1; --i >= 0; p++) {
 			if (p->trap == NULL)
+#if 0/*defined but not used*/
 				anydfl = 1;
+#endif
 			else {
 				shprintf("trap -- ");
 				print_value_quoted(p->trap);
