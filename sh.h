@@ -521,7 +521,6 @@ enum sh_flag {
 	FVIRAW,		/* always read in raw mode (ignored) */
 	FVISHOW8,	/* display chars with 8th bit set as is (versus M-) */
 	FVITABCOMPLETE,	/* enable tab as file name completion char */
-	FVIESCCOMPLETE,	/* enable ESC as file name completion in command mode */
 #endif
 	FXTRACE,	/* -x: execution trace */
 	FTALKING_I,	/* (internal): initial shell was interactive */

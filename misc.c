@@ -157,7 +157,6 @@ const struct option options[] = {
 	{ "viraw",	  0,		OF_ANY }, /* no effect */
 	{ "vi-show8",	  0,		OF_ANY }, /* non-standard */
 	{ "vi-tabcomplete",  0, 	OF_ANY }, /* non-standard */
-	{ "vi-esccomplete",  0, 	OF_ANY }, /* non-standard */
 #endif
 	{ "xtrace",	'x',		OF_ANY },
 	/* Anonymous flags: used internally by shell only
