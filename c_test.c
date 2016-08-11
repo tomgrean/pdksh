@@ -93,8 +93,8 @@ static int	test_nexpr(Test_env *te, int do_eval);
 static int	test_primary(Test_env *te, int do_eval);
 static int	ptest_isa(Test_env *te, Test_meta meta);
 static const char *ptest_getopnd(Test_env *te, Test_op op, int do_eval);
-static int	ptest_eval ARGS((Test_env *te, Test_op op, const char *opnd1,
-				const char *opnd2, int do_eval));
+static int	ptest_eval(Test_env *te, Test_op op, const char *opnd1,
+				const char *opnd2, int do_eval);
 static void	ptest_error(Test_env *te, int offset, const char *msg);
 
 int

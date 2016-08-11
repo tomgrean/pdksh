@@ -1,8 +1,11 @@
 #include "sh.h"
 #include "ksh_stat.h"
-#define EXTERN
 #include "tty.h"
-#undef EXTERN
+
+/* global */
+int tty_fd =-1;	/* dup'd tty file descriptor */
+int tty_devtty;	/* true if tty_fd is from /dev/tty */
+TTY_state tty_state;	/* saved tty state */
 
 int
 get_tty(int fd, TTY_state *ts)

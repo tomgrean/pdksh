@@ -5,6 +5,16 @@
 #include "sh.h"
 #include <ctype.h>
 
+/* global */
+Source *source;		/* yyparse/yylex source */
+YYSTYPE	yylval;		/* result from yylex */
+struct ioword *heres [HERES], **herep;
+char	ident [IDENT+1];
+#ifdef HISTORY
+char  **history;	/* saved commands */
+char  **histptr;	/* last history item */
+int	histsize;	/* history size */
+#endif /* HISTORY */
 
 /* Structure to keep track of the lexing state and the various pieces of info
  * needed for each particular state.

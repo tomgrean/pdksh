@@ -2,6 +2,8 @@
  * Expanding strings
  */
 /* $Id$ */
+#ifndef _EXPAND_H_
+#define _EXPAND_H_
 
 #define X_EXTRA		8	/* this many extra bytes in X string */
 
@@ -104,3 +106,6 @@ typedef struct XPtrV {
 					 sizeofN(void*, XPsize(x)), ATEMP)
 
 #define	XPfree(x)	afree((void*) (x).beg, ATEMP)
+
+
+#endif /*_EXPAND_H_*/

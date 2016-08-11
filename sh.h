@@ -4,14 +4,9 @@
 
 /* $Id: sh.h,v 1.2 1994/05/19 18:32:40 michael Exp michael $ */
 
+#ifndef _SH_H_
+#define _SH_H_
 #include "config.h"	/* system and option configuration info */
-
-#ifdef HAVE_PROTOTYPES
-# define	ARGS(args)	args	/* prototype declaration */
-#else
-# define	ARGS(args)	()	/* K&R declaration */
-#endif
-
 
 /* Start of common headers */
 
@@ -260,15 +255,6 @@ extern int dup2(int, int);
 # define UNINITIALIZED(var)	var
 #endif /* GNUC || lint */
 
-/* some useful #defines */
-#ifdef EXTERN
-# define I__(i) = i
-#else
-# define I__(i)
-# define EXTERN extern
-# define EXTERN_DEFINED
-#endif
-
 #ifndef EXECSHELL
 /* shell to exec scripts (see also $SHELL initialization in main.c) */
 # define EXECSHELL	"/bin/sh"
@@ -328,7 +314,7 @@ typedef INT32 Tflag;
 /* you're not going to run setuid shell scripts, are you? */
 #define	eaccess(path, mode)	access(path, mode)
 #else
-EXTERN int eaccess( const char * pathname, int mode );
+extern int eaccess( const char * pathname, int mode );
 #endif
 
 /* Make MAGIC a char that might be printed to make bugs more obvious, but
@@ -343,16 +329,16 @@ EXTERN int eaccess( const char * pathname, int mode );
 #define	PATH	1024		/* pathname size (todo: PATH_MAX/pathconf()) */
 #define ARRAYMAX 1023		/* max array index */
 
-EXTERN	const char *kshname;	/* $0 */
-EXTERN	pid_t	kshpid;		/* $$, shell pid */
-EXTERN	pid_t	procpid;	/* pid of executing process */
-EXTERN	int	ksheuid;	/* effective uid of shell */
-EXTERN	int	kshegid;	/* effective gid of shell */
-EXTERN	int	kshuid;		/* real uid of shell */
-EXTERN	int	kshgid;		/* real gid of shell */
-EXTERN	int	exstat;		/* exit status */
-EXTERN	int	subst_exstat;	/* exit status of last $(..)/`..` */
-EXTERN	const char *safe_prompt; /* safe prompt if PS1 substitution fails */
+extern	const char *kshname;	/* $0 */
+extern	pid_t	kshpid;		/* $$, shell pid */
+extern	pid_t	procpid;	/* pid of executing process */
+extern	int	ksheuid;	/* effective uid of shell */
+extern	int	kshegid;	/* effective gid of shell */
+extern	int	kshuid;		/* real uid of shell */
+extern	int	kshgid;		/* real gid of shell */
+extern	int	exstat;		/* exit status */
+extern	int	subst_exstat;	/* exit status of last $(..)/`..` */
+extern	const char *safe_prompt; /* safe prompt if PS1 substitution fails */
 
 
 /*
@@ -367,7 +353,7 @@ typedef struct Area {
 #endif
 } Area;
 
-EXTERN	Area	aperm;		/* permanent object space */
+extern	Area	aperm;		/* permanent object space */
 #define	APERM	&aperm
 #define	ATEMP	&e->area
 
@@ -389,7 +375,7 @@ EXTERN	Area	aperm;		/* permanent object space */
 /*
  * parsing & execution environment
  */
-EXTERN	struct env {
+struct env {
 	short	type;			/* enviroment type - see below */
 	short	flags;			/* EF_* */
 	Area	area;			/* temporary allocation area */
@@ -398,7 +384,8 @@ EXTERN	struct env {
 	struct	env *oenv;		/* link to previous enviroment */
 	ksh_jmp_buf jbuf;		/* long jump back to env creator */
 	struct temp *temps;		/* temp files */
-} *e;
+};
+extern struct env *e;
 
 /* struct env.type values */
 #define	E_NONE	0		/* dummy enviroment */
@@ -500,12 +487,12 @@ enum sh_flag {
 
 #define Flag(f)	(shell_flags[(int) (f)])
 
-EXTERN	char shell_flags [FNFLAGS];
+extern	char shell_flags [FNFLAGS];
 
-EXTERN	char	null [] I__("");	/* null value for variable */
-EXTERN	char	space [] I__(" ");
-EXTERN	char	newline [] I__("\n");
-EXTERN	char	slash [] I__("/");
+extern char null[];	/* null value for variable */
+extern char space[];
+extern char newline[];
+extern char slash[];
 
 enum temp_type {
     TT_HEREDOC_EXP,	/* expanded heredoc */
@@ -528,7 +515,7 @@ struct temp {
 #define shl_spare	(&shf_iob[0])	/* for c_read()/c_print() */
 #define shl_stdout	(&shf_iob[1])
 #define shl_out		(&shf_iob[2])
-EXTERN int shl_stdout_ok;
+extern int shl_stdout_ok;
 
 /*
  * trap handlers
@@ -569,9 +556,9 @@ typedef struct trap {
 #define SIGEXIT_	0	/* for trap EXIT */
 #define SIGERR_		SIGNALS	/* for trap ERR */
 
-EXTERN	int volatile trap;	/* traps pending? */
-EXTERN	int volatile intrsig;	/* pending trap interrupts executing command */
-EXTERN	int volatile fatal_trap;/* received a fatal signal */
+extern	int volatile trap;	/* traps pending? */
+extern	int volatile intrsig;	/* pending trap interrupts executing command */
+extern	int volatile fatal_trap;/* received a fatal signal */
 #ifndef FROM_TRAP_C
 /* Kludge to avoid bogus re-declaration of sigtraps[] error on AIX 3.2.5 */
 extern	Trap	sigtraps[SIGNALS+1];
@@ -588,13 +575,13 @@ enum tmout_enum {
 		TMOUT_READING,		/* waiting for input */
 		TMOUT_LEAVING		/* have timed out */
 	};
-EXTERN unsigned int ksh_tmout;
-EXTERN enum tmout_enum ksh_tmout_state I__(TMOUT_EXECUTING);
+extern unsigned int ksh_tmout;
+extern enum tmout_enum ksh_tmout_state;
 #endif /* KSH */
 
 
 /* For "You have stopped jobs" message */
-EXTERN int really_exit;
+extern int really_exit;
 
 
 /*
@@ -617,7 +604,7 @@ extern	short ctypes [];
 #define	digit(c)	ctype(c, C_DIGIT)
 #define	letnum(c)	ctype(c, C_ALPHA|C_DIGIT)
 
-EXTERN int ifs0 I__(' ');	/* for "$*" */
+extern int ifs0;	/* for "$*" */
 
 
 /* Argument parsing for built-in commands and getopts command */
@@ -642,8 +629,8 @@ typedef struct {
 	char		buf[2];	/* for bad option OPTARG value */
 } Getopt;
 
-EXTERN Getopt builtin_opt;	/* for shell builtin commands */
-EXTERN Getopt user_opt;		/* parsing state for getopts builtin command */
+extern Getopt builtin_opt;	/* for shell builtin commands */
+extern Getopt user_opt;		/* parsing state for getopts builtin command */
 
 
 #ifdef KSH
@@ -658,23 +645,23 @@ struct coproc {
 	int	njobs;		/* number of live jobs using output pipe */
 	void    *job;           /* 0 or job of co-process using input pipe */
 };
-EXTERN struct coproc coproc;
+extern struct coproc coproc;
 #endif /* KSH */
 
 /* Used in jobs.c and by coprocess stuff in exec.c */
 #ifdef JOB_SIGS
-EXTERN sigset_t		sm_default, sm_sigchld;
+extern sigset_t		sm_default, sm_sigchld;
 #endif /* JOB_SIGS */
 
 extern const char ksh_version[];
 
 /* name of called builtin function (used by error functions) */
-EXTERN char	*builtin_argv0;
-EXTERN Tflag	builtin_flag;	/* flags of called builtin (SPEC_BI, etc.) */
+extern char	*builtin_argv0;
+extern Tflag	builtin_flag;	/* flags of called builtin (SPEC_BI, etc.) */
 
 /* current working directory, and size of memory allocated for same */
-EXTERN char	*current_wd;
-EXTERN int	current_wd_size;
+extern char	*current_wd;
+extern int	current_wd_size;
 
 #ifdef EDIT
 /* Minimium required space to work with on a line - if the prompt leaves less
@@ -684,7 +671,7 @@ EXTERN int	current_wd_size;
 /* Minimium allowed value for x_cols: 2 for prompt, 3 for " < " at end of line
  */
 # define MIN_COLS	(2 + MIN_EDIT_SPACE + 3)
-EXTERN	int	x_cols I__(80);	/* tty columns */
+extern	int	x_cols;	/* tty columns */
 #else
 # define x_cols 80		/* for pr_menu(exec.c) */
 #endif
@@ -718,9 +705,4 @@ EXTERN	int	x_cols I__(80);	/* tty columns */
 #include "lex.h"
 #include "proto.h"
 
-/* be sure not to interfere with anyone else's idea about EXTERN */
-#ifdef EXTERN_DEFINED
-# undef EXTERN_DEFINED
-# undef EXTERN
-#endif
-#undef I__
+#endif /*_SH_H_*/

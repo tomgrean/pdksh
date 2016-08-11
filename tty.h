@@ -10,15 +10,8 @@
 */
 /* $Id$ */
 
-/* some useful #defines */
-#ifdef EXTERN
-# define I__(i) = i
-#else
-# define I__(i)
-# define EXTERN extern
-# define EXTERN_DEFINED
-#endif
-
+#ifndef _TTY_H_
+#define _TTY_H_
 /* Don't know of a system on which including sys/ioctl.h with termios.h
  * causes problems.  If there is one, these lines need to be deleted and
  * aclocal.m4 needs to have stuff un-commented.
@@ -91,18 +84,13 @@ typedef struct {
 #define TF_WAIT		0x01	/* drain output, even it requires sleep() */
 #define TF_MIPSKLUDGE	0x02	/* kludge to unwedge RISC/os 5.0 tty driver */
 
-EXTERN int		tty_fd I__(-1);	/* dup'd tty file descriptor */
-EXTERN int		tty_devtty;	/* true if tty_fd is from /dev/tty */
-EXTERN TTY_state	tty_state;	/* saved tty state */
+extern int		tty_fd;	/* dup'd tty file descriptor */
+extern int		tty_devtty;	/* true if tty_fd is from /dev/tty */
+extern TTY_state	tty_state;	/* saved tty state */
 
-extern int	get_tty(int fd, TTY_state *ts);
-extern int	set_tty(int fd, TTY_state *ts, int flags);
-extern void	tty_init(int init_ttystate);
-extern void	tty_close(void);
+int	get_tty(int fd, TTY_state *ts);
+int	set_tty(int fd, TTY_state *ts, int flags);
+void	tty_init(int init_ttystate);
+void	tty_close(void);
 
-/* be sure not to interfere with anyone else's idea about EXTERN */
-#ifdef EXTERN_DEFINED
-# undef EXTERN_DEFINED
-# undef EXTERN
-#endif
-#undef I__
+#endif /*_TTY_H_*/

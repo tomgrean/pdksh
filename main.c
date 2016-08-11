@@ -2,8 +2,6 @@
  * startup, main loop, enviroments and error handling
  */
 
-#define	EXTERN				/* define EXTERNs in sh.h */
-
 #include "sh.h"
 #include "ksh_stat.h"
 #include "ksh_time.h"

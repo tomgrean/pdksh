@@ -25,13 +25,12 @@
 /* Changes to sigact.h for pdksh, Michael Rendell <michael@cs.mun.ca>:
  *	- changed SIG_HDLR to RETSIGTYPE for use with GNU autoconf
  *	- added RETSIGVAL
- *	- ifdef'd out ARGS(), volatile and const initializations
  *	- ifdef'd out sigset_t definition - let autoconf handle it
  *	- ifdef out routines not used in ksh if IS_KSH is defined
  *	  (same in sigact.c).
  */
-#ifndef _SIGACT_H
-#define _SIGACT_H
+#ifndef _SIGACT_H_
+#define _SIGACT_H_
 
 /*
  * most modern systems use void for signal handlers but
@@ -40,17 +39,6 @@
 #ifndef RETSIGTYPE
 # define RETSIGTYPE void
 # define RETSIGVAL
-#endif
-
-#if 0 /* ARGS(), volatile and const are already set up in config*.h -mhr */
-#undef ARGS
-#if defined(__STDC__) || defined(__cplusplus)
-# define ARGS(p) p
-#else
-# define ARGS(p) ()
-# define volatile			/* don't optimize please */
-# define const				/* read only */
-#endif
 #endif
 
 #ifndef IS_KSH
@@ -126,4 +114,4 @@ int	sigsuspend( sigset_t *mask );
 # define NSIG _NSIG
 #endif
 #endif /* ! SA_NOCLDSTOP */
-#endif /* _SIGACT_H */
+#endif /* _SIGACT_H_ */

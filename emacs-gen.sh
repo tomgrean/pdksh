@@ -35,7 +35,7 @@ sed -e '1,/@START-FUNC-TAB@/d' -e '/@END-FUNC-TAB@/,$d' < $file |
 			fname = substr(fname, 1, length(fname) - 1);
 		if (fname != "0") {
 			printf "#define XFUNC_%s %d\n", substr(fname, 3, length(fname) - 2), nfunc;
-			printf "static int %s ARGS((int c));\n", fname;
+			printf "static int %s(int c);\n", fname;
 			nfunc++;
 		}
 	    }' || exit 1

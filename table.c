@@ -4,6 +4,21 @@
 
 #include "sh.h"
 
+struct table taliases;	/* tracked aliases */
+struct table builtins;	/* built-in commands */
+struct table aliases;	/* aliases */
+struct table keywords;	/* keywords */
+struct table homedirs;	/* homedir() cache */
+
+char *path;		/* copy of either PATH or def_path */
+const char *def_path;	/* path to use if PATH not set */
+char *tmpdir;		/* TMPDIR value */
+const char *prompt;
+int cur_prompt;		/* PS1 or PS2 */
+int current_lineno;	/* LINENO value */
+
+
+
 #define	INIT_TBLS	8	/* initial table size (power of 2) */
 
 static void     texpand(struct table *tp, int nsize);

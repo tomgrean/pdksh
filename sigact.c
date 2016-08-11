@@ -132,7 +132,6 @@
  *	  are interrupted and pdksh needs this behaviour).
  *	- define IS_KSH before including anything; ifdef out routines
  *	  not used in ksh if IS_KSH is defined (same in sigact.h).
- *	- use ARGS() instead of __P()
  *	- sigaction(),sigsuspend(),Signal(),signal(): use handler_t typedef
  *	  instead of explicit type.
  */

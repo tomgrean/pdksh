@@ -12,6 +12,70 @@
 # define UCHAR_MAX	0xFF
 #endif
 
+/* global */
+const char *kshname;	/* $0 */
+pid_t kshpid;		/* $$, shell pid */
+pid_t procpid;	/* pid of executing process */
+int	ksheuid;	/* effective uid of shell */
+int	kshegid;	/* effective gid of shell */
+int	kshuid;		/* real uid of shell */
+int	kshgid;		/* real gid of shell */
+int	exstat;		/* exit status */
+int	subst_exstat;	/* exit status of last $(..)/`..` */
+const char *safe_prompt; /* safe prompt if PS1 substitution fails */
+
+Area aperm;		/* permanent object space */
+
+struct env *e;
+char shell_flags [FNFLAGS];
+
+char null[] = "";	/* null value for variable */
+char space[] = " ";
+char newline[] = "\n";
+char slash[] = "/";
+
+int shl_stdout_ok;
+
+int volatile trap;	/* traps pending? */
+int volatile intrsig;	/* pending trap interrupts executing command */
+int volatile fatal_trap;/* received a fatal signal */
+
+#ifdef KSH
+/*
+ * TMOUT support
+ */
+unsigned int ksh_tmout;
+enum tmout_enum ksh_tmout_state = TMOUT_EXECUTING;
+
+struct coproc coproc;
+#endif /* KSH */
+
+
+/* For "You have stopped jobs" message */
+int really_exit;
+
+int ifs0 = ' ';	/* for "$*" */
+
+Getopt builtin_opt;	/* for shell builtin commands */
+Getopt user_opt;		/* parsing state for getopts builtin command */
+
+/* Used in jobs.c and by coprocess stuff in exec.c */
+#ifdef JOB_SIGS
+sigset_t sm_default, sm_sigchld;
+#endif /* JOB_SIGS */
+
+char *builtin_argv0;
+Tflag builtin_flag;	/* flags of called builtin (SPEC_BI, etc.) */
+
+/* current working directory, and size of memory allocated for same */
+char *current_wd;
+int current_wd_size;
+
+#ifdef EDIT
+int	x_cols = 80;	/* tty columns */
+#endif
+
+
 short ctypes [UCHAR_MAX+1];	/* type bits for unsigned char */
 
 static int	do_gmatch(const unsigned char *s, const unsigned char *p,

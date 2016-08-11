@@ -1,5 +1,5 @@
-#ifndef SHF_H
-# define SHF_H
+#ifndef _SHF_H
+#define _SHF_H
 
 /*
  * Shell file I/O routines
@@ -58,12 +58,12 @@ struct shf {
 
 extern struct shf shf_iob[];
 
-struct shf *shf_open	ARGS((const char *name, int oflags, int mode,
-			      int sflags));
+struct shf *shf_open(const char *name, int oflags, int mode,
+			      int sflags);
 struct shf *shf_fdopen(int fd, int sflags, struct shf *shf);
 struct shf *shf_reopen(int fd, int sflags, struct shf *shf);
-struct shf *shf_sopen	ARGS((char *buf, int bsize, int sflags,
-			      struct shf *shf));
+struct shf *shf_sopen(char *buf, int bsize, int sflags,
+			      struct shf *shf);
 int	    shf_close(struct shf *shf);
 int	    shf_fdclose(struct shf *shf);
 char	   *shf_sclose(struct shf *shf);
@@ -82,4 +82,4 @@ int	    shf_snprintf(char *buf, int bsize, const char *fmt, ...);
 char	    *shf_smprintf(const char *fmt, ...);
 int	    shf_vfprintf(struct shf *, const char *fmt, va_list args);
 
-#endif /* SHF_H */
+#endif /* _SHF_H */

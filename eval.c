@@ -192,8 +192,7 @@ expand(char *cp,	/* input word */
 	word = (f&DOBLANK) ? IFS_WS : IFS_WORD;
 	st_head.next = (SubType *) 0;
 	st = &st_head;
-	x.split = 0;
-	x.str   = NULL;
+	memset(&x, 0, sizeof(x));
 
 	while (1) {
 		Xcheck(ds, dp);

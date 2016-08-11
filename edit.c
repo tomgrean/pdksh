@@ -8,18 +8,16 @@
 
 #include "sh.h"
 #include "tty.h"
-#define EXTERN
 #include "edit.h"
-#undef EXTERN
-#ifdef OS_SCO	/* SCO Unix 3.2v4.1 */
-# include <sys/stream.h>	/* needed for <sys/ptem.h> */
-# include <sys/ptem.h>		/* needed for struct winsize */
-#endif /* OS_SCO */
+
 #ifdef DEBIAN
 #include <sys/ioctl.h>
 #endif /* DEBIAN */
 #include <ctype.h>
 #include "ksh_stat.h"
+
+/* global */
+X_chars edchars;
 
 #if defined(TIOCGWINSZ)
 static RETSIGTYPE x_sigwinch(int sig);

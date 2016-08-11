@@ -4,6 +4,9 @@
 
 /* $Id: lex.h,v 1.4 1994/05/31 13:34:34 michael Exp $ */
 
+#ifndef _LEX_H_
+#define _LEX_H_
+
 #define	IDENT	64
 
 typedef struct source Source;
@@ -117,15 +120,17 @@ typedef union {
 
 #define	HERES	10		/* max << in line */
 
-EXTERN	Source *source;		/* yyparse/yylex source */
-EXTERN	YYSTYPE	yylval;		/* result from yylex */
-EXTERN	struct ioword *heres [HERES], **herep;
-EXTERN	char	ident [IDENT+1];
+extern	Source *source;		/* yyparse/yylex source */
+extern	YYSTYPE	yylval;		/* result from yylex */
+extern	struct ioword *heres [HERES], **herep;
+extern	char	ident [IDENT+1];
 
 #ifdef HISTORY
 # define HISTORYSIZE	128	/* size of saved history */
 
-EXTERN	char  **history;	/* saved commands */
-EXTERN	char  **histptr;	/* last history item */
-EXTERN	int	histsize;	/* history size */
+extern	char  **history;	/* saved commands */
+extern	char  **histptr;	/* last history item */
+extern	int	histsize;	/* history size */
 #endif /* HISTORY */
+
+#endif /*_LEX_H_*/

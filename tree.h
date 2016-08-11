@@ -2,6 +2,8 @@
  * command trees for compile/execute
  */
 
+#ifndef _TREE_H_
+#define _TREE_H_
 /* $Id: tree.h,v 1.3 1994/05/31 13:34:34 michael Exp $ */
 
 #define	NOBLOCK	((struct op *)NULL)
@@ -138,3 +140,5 @@ struct ioword {
 #define DB_AND	3		/* && -> -a conversion */
 #define DB_BE	4		/* an inserted -BE */
 #define DB_PAT	5		/* a pattern argument */
+
+#endif /*_TREE_H_*/

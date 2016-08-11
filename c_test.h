@@ -1,3 +1,6 @@
+#ifndef _C_TEST_H_
+#define _C_TEST_H_
+
 /* Various types of operations.  Keeping things grouped nicely
  * (unary,binary) makes switch() statements more efficeint.
  */
@@ -51,3 +54,5 @@ Test_op	test_isop(Test_env *te, Test_meta meta, const char *s);
 int     test_eval(Test_env *te, Test_op op, const char *opnd1,
 			const char *opnd2, int do_eval);
 int	test_parse(Test_env *te);
+
+#endif /*_C_TEST_H_*/

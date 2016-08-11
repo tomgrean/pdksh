@@ -12,14 +12,8 @@
  *
  */
 
-/* some useful #defines */
-#ifdef EXTERN
-# define I__(i) = i
-#else
-# define I__(i)
-# define EXTERN extern
-# define EXTERN_DEFINED
-#endif
+#ifndef _EDIT_H_
+#define _EDIT_H_
 
 #define	BEL		0x07
 
@@ -33,7 +27,7 @@ typedef struct {
 	int eof;
 } X_chars;
 
-EXTERN X_chars edchars;
+extern X_chars edchars;
 
 /* x_fc_glob() flags */
 #define XCF_COMMAND	BIT(0)	/* Do command completion */
@@ -71,16 +65,4 @@ int 	x_vi(char *buf, size_t len);
 # define D__(x)
 #endif
 
-/* This lot goes at the END */
-/* be sure not to interfere with anyone else's idea about EXTERN */
-#ifdef EXTERN_DEFINED
-# undef EXTERN_DEFINED
-# undef EXTERN
-#endif
-#undef I__
-/*
- * Local Variables:
- * version-control:t
- * comment-column:40
- * End:
- */
+#endif /*_EDIT_H_*/
