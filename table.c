@@ -33,9 +33,9 @@ tinit(struct table *tp, Area *ap, int tsize)
 static void
 texpand(struct table *tp, int nsize)
 {
-	 int i;
-	 struct tbl *tblp, **p;
-	 struct tbl **ntblp, **otblp = tp->tbls;
+	int i;
+	struct tbl *tblp, **p;
+	struct tbl **ntblp, **otblp = tp->tbls;
 	int osize = tp->size;
 
 	ntblp = (struct tbl**) alloc(sizeofN(struct tbl *, nsize), tp->areap);
@@ -93,7 +93,7 @@ tenter(struct table *tp, const char *n, unsigned int h)
 
 	if (tp->size == 0)
 		texpand(tp, INIT_TBLS);
-  Search:
+Search:
 	/* search for name in hashed table */
 	for (pp = &tp->tbls[h & (tp->size-1)]; (p = *pp) != NULL; pp--) {
 		if (*p->name == *n && strcmp(p->name, n) == 0)

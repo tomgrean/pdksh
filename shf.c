@@ -538,14 +538,6 @@ shf_getse(char *buf, int bsize, struct shf *shf)
 		shf->rnleft -= ncopy;
 		buf += ncopy;
 		bsize -= ncopy;
-#ifdef OS2
-		if (end && buf > orig_buf + 1 && buf[-2] == '\r') {
-			buf--;
-			bsize++;
-			buf[-1] = '\n';
-		}
-#endif
-
 	} while (!end && bsize);
 	*buf = '\0';
 	return buf;

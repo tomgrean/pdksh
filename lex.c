@@ -211,12 +211,6 @@ yylex(int cf)
 			switch (c) {
 			  case '\\':
 				c = getsc();
-#ifdef OS2
-				if (isalnum(c)) {
-					*wp++ = CHAR, *wp++ = '\\';
-					*wp++ = CHAR, *wp++ = c;
-				} else 
-#endif
 				if (c) /* trailing \ is lost */
 					*wp++ = QCHAR, *wp++ = c;
 				break;
@@ -880,13 +874,7 @@ readhere(struct ioword *iop)
 }
 
 void
-#ifdef HAVE_PROTOTYPES
 yyerror(const char *fmt, ...)
-#else
-yyerror(fmt, va_alist)
-	const char *fmt;
-	va_dcl
-#endif
 {
 	va_list va;
 
@@ -1246,10 +1234,9 @@ static char *
 get_brace_var(XString *wsp, char *wp)
 {
 	enum parse_state {
-			   PS_INITIAL, PS_SAW_HASH, PS_IDENT,
-			   PS_NUMBER, PS_VAR1, PS_END
-			 }
-		state;
+		PS_INITIAL, PS_SAW_HASH, PS_IDENT,
+		PS_NUMBER, PS_VAR1, PS_END
+	}state;
 	char c;
 
 	state = PS_INITIAL;

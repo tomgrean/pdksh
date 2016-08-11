@@ -166,10 +166,6 @@ x_gets(char *buf, size_t len)
 int
 x_getc(void)
 {
-#ifdef OS2
-	unsigned char c = _read_kbd(0, 1, 0);
-	return c == 0 ? 0xE0 : c;
-#else /* OS2 */
 	char c;
 	int n;
 
@@ -182,7 +178,6 @@ x_getc(void)
 	if (n != 1)
 		return -1;
 	return (int) (unsigned char) c;
-#endif /* OS2 */
 }
 
 void
@@ -763,6 +758,12 @@ set_completion(const char *name, const char *opts)
 
 	n = str_save(name, APERM);
 	p = tenter(&completes, n, hash(n));
+
+	if (p->flag == DEFINED) {
+		if (p->type != 'C') {
+			afree(p->val.s, APERM);
+		}
+	}
 
 	p->type = *opts;
 	p->flag = DEFINED;

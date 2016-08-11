@@ -95,11 +95,6 @@ main(int argc, char *argv[])
 	/* chmem_push("+c", 1); */
 #endif /* MEM_DEBUG */
 
-#ifdef OS2
-	setmode (0, O_BINARY);
-	setmode (1, O_TEXT);
-#endif
-
 	/* make sure argv[] is sane */
 	if (!*argv) {
 		static const char	*empty_argv[] = {
@@ -299,18 +294,7 @@ main(int argc, char *argv[])
 			kshname = argv[argi++];
 	} else if (argi < argc && !Flag(FSTDIN)) {
 		s = pushs(SFILE, ATEMP);
-#ifdef OS2
-		/* a bug in os2 extproc shell processing doesn't
-		 * pass full pathnames so we have to search for it.
-		 * This changes the behavior of 'ksh arg' to search
-		 * the users search path but it can't be helped.
-		 */
-		s->file = search(argv[argi++], path, R_OK, (int *) 0);
-		if (!s->file || !*s->file)
-		        s->file = argv[argi - 1];
-#else
 		s->file = argv[argi++];
-#endif /* OS2 */
 		s->u.shf = shf_open(s->file, O_RDONLY, 0, SHF_MAPHI|SHF_CLEXEC);
 		if (s->u.shf == NULL) {
 			exstat = 127; /* POSIX */
@@ -369,26 +353,9 @@ main(int argc, char *argv[])
 		warningf(FALSE, "Cannot determine current working directory");
 
 	if (Flag(FLOGIN)) {
-#ifdef OS2
-		char *profile;
-
-		/* Try to find a profile - first see if $INIT has a value,
-		 * then try /etc/profile.ksh, then c:/usr/etc/profile.ksh.
-		 */
-		if (!Flag(FPRIVILEGED)
-		    && strcmp(profile = substitute("$INIT/profile.ksh", 0),
-			      "/profile.ksh"))
-			include(profile, 0, (char **) 0, 1);
-		else if (include("/etc/profile.ksh", 0, (char **) 0, 1) < 0)
-			include("c:/usr/etc/profile.ksh", 0, (char **) 0, 1);
-		if (!Flag(FPRIVILEGED))
-			include(substitute("$HOME/profile.ksh", 0), 0,
-				(char **) 0, 1);
-#else /* OS2 */
 		include(KSH_SYSTEM_PROFILE, 0, (char **) 0, 1);
 		if (!Flag(FPRIVILEGED))
 			include(substitute("$HOME/.profile", 0), 0, (char **) 0, 1);
-#endif /* OS2 */
 	} else {
 		if (!Flag(FPRIVILEGED))
 			include(substitute("$HOME/.kshrc", 0), 0, (char **) 0, 1);
@@ -415,11 +382,6 @@ main(int argc, char *argv[])
 		env_file = substitute(env_file, DOTILDE);
 		if (*env_file != '\0')
 			include(env_file, 0, (char **) 0, 1);
-#ifdef OS2
-		else if (Flag(FTALKING))
-			include(substitute("$HOME/kshrc.ksh", 0), 0,
-				(char **) 0, 1);
-#endif /* OS2 */
 	}
 
 	if (is_restricted(argv[0]) || is_restricted(str_val(global("SHELL"))))
@@ -786,44 +748,9 @@ reclaim(void)
 static void
 remove_temps(struct temp *tp)
 {
-#ifdef OS2
-	static struct temp *delayed_remove;
-	struct temp *t, **tprev;
-
-	if (delayed_remove) {
-		for (tprev = &delayed_remove, t = delayed_remove; t; t = *tprev)
-			/* No need to check t->pid here... */
-			if (unlink(t->name) >= 0 || errno == ENOENT) {
-				*tprev = t->next;
-				afree(t, APERM);
-			} else
-				tprev = &t->next;
-	}
-#endif /* OS2 */
-
 	for (; tp != NULL; tp = tp->next)
 		if (tp->pid == procpid) {
-#ifdef OS2
-			/* OS/2 (and dos) do not allow files that are currently
-			 * open to be removed, so we cache it away for future
-			 * removal.
-			 * XXX should only do this if errno
-			 *     is Efile-still-open-can't-remove
-			 *     (but I don't know what that is...)
-			 */
-			if (unlink(tp->name) < 0 && errno != ENOENT) {
-				t = (struct temp *) alloc(
-				    sizeof(struct temp) + strlen(tp->name) + 1,
-				    APERM);
-				memset(t, 0, sizeof(struct temp));
-				t->name = (char *) &t[1];
-				strcpy(t->name, tp->name);
-				t->next = delayed_remove;
-				delayed_remove = t;
-			}
-#else /* OS2 */
 			unlink(tp->name);
-#endif /* OS2 */
 		}
 }
 

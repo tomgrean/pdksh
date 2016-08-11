@@ -203,9 +203,6 @@ typedef	RETSIGTYPE (*handler_t)(int);	/* signal handler */
 #endif /* !HAVE_KILLPG */
 
 /* Special cases for execve(2) */
-#ifdef OS2
-extern int ksh_execve(char *cmd, char **args, char **env, int flags);
-#else /* OS2 */
 # if defined(OS_ISC) && defined(_POSIX_SOURCE)
 /* Kludge for ISC 3.2 (and other versions?) so programs will run correctly.  */
 #  define ksh_execve(p, av, ev, flags) \
@@ -217,7 +214,6 @@ extern int ksh_execve(char *cmd, char **args, char **env, int flags);
 # else /* OS_ISC && _POSIX */
 #  define ksh_execve(p, av, ev, flags)	execve(p, av, ev)
 # endif /* OS_ISC && _POSIX */
-#endif /* OS2 */
 
 /* this is a hang-over from older versions of the os2 port */
 #define ksh_dupbase(fd, base) fcntl(fd, F_DUPFD, base)
@@ -273,19 +269,10 @@ extern int dup2(int, int);
 # define EXTERN_DEFINED
 #endif
 
-#ifdef OS2
-# define inDOS() (!(_emx_env & 0x200))
-#endif
-
 #ifndef EXECSHELL
 /* shell to exec scripts (see also $SHELL initialization in main.c) */
-# ifdef OS2
-#  define EXECSHELL	(inDOS() ? "c:\\command.com" : "c:\\os2\\cmd.exe")
-#  define EXECSHELL_STR	(inDOS() ? "COMSPEC" : "OS2_SHELL")
-# else /* OS2 */
-#  define EXECSHELL	"/bin/sh"
-#  define EXECSHELL_STR	"EXECSHELL"
-# endif /* OS2 */
+# define EXECSHELL	"/bin/sh"
+# define EXECSHELL_STR	"EXECSHELL"
 #endif
 
 /* ISABSPATH() means path is fully and completely specified,
@@ -296,48 +283,32 @@ extern int dup2(int, int);
  * unix		/foo		yes		yes		no
  * unix		foo		no		no		yes
  * unix		../foo		no		no		yes
- * os2+cyg	a:/foo		yes		yes		no
- * os2+cyg	a:foo		no		no		no
- * os2+cyg	/foo		no		yes		no
- * os2+cyg	foo		no		no		yes
- * os2+cyg	../foo		no		no		yes
+ * cyg	a:/foo		yes		yes		no
+ * cyg	a:foo		no		no		no
+ * cyg	/foo		no		yes		no
+ * cyg	foo		no		no		yes
+ * cyg	../foo		no		no		yes
  * cyg 		//foo		yes		yes		no
  */
-#ifdef OS2
-# define PATHSEP        ';'
-# define DIRSEP         '/'	/* even though \ is native */
-# define DIRSEPSTR      "\\"
-# define ISDIRSEP(c)    ((c) == '\\' || (c) == '/')
-# define ISABSPATH(s)	(((s)[0] && (s)[1] == ':' && ISDIRSEP((s)[2])))
-# define ISROOTEDPATH(s) (ISDIRSEP((s)[0]) || ISABSPATH(s))
-# define ISRELPATH(s)	(!(s)[0] || ((s)[1] != ':' && !ISDIRSEP((s)[0])))
-# define FILECHCONV(c)	(isascii(c) && isupper(c) ? tolower(c) : c)
-# define FILECMP(s1, s2) stricmp(s1, s2)
-# define FILENCMP(s1, s2, n) strnicmp(s1, s2, n)
-extern char *ksh_strchr_dirsep(const char *path);
-extern char *ksh_strrchr_dirsep(const char *path);
-# define chdir          _chdir2
-# define getcwd         _getcwd2
-#else
-# define PATHSEP        ':'
-# define DIRSEP         '/'
-# define DIRSEPSTR      "/"
-# define ISDIRSEP(c)    ((c) == '/')
+
+#define PATHSEP        ':'
+#define DIRSEP         '/'
+#define DIRSEPSTR      "/"
+#define ISDIRSEP(c)    ((c) == '/')
 #ifdef __CYGWIN__
-#  define ISABSPATH(s) \
-       (((s)[0] && (s)[1] == ':' && ISDIRSEP((s)[2])) || ISDIRSEP((s)[0]))
-#  define ISRELPATH(s) (!(s)[0] || ((s)[1] != ':' && !ISDIRSEP((s)[0])))
+# define ISABSPATH(s) \
+      (((s)[0] && (s)[1] == ':' && ISDIRSEP((s)[2])) || ISDIRSEP((s)[0]))
+# define ISRELPATH(s) (!(s)[0] || ((s)[1] != ':' && !ISDIRSEP((s)[0])))
 #else /* __CYGWIN__ */
 # define ISABSPATH(s)	ISDIRSEP((s)[0])
 # define ISRELPATH(s)	(!ISABSPATH(s))
 #endif /* __CYGWIN__ */
-# define ISROOTEDPATH(s) ISABSPATH(s)
-# define FILECHCONV(c)	c
-# define FILECMP(s1, s2) strcmp(s1, s2)
-# define FILENCMP(s1, s2, n) strncmp(s1, s2, n)
-# define ksh_strchr_dirsep(p)   strchr(p, DIRSEP)
-# define ksh_strrchr_dirsep(p)  strrchr(p, DIRSEP)
-#endif
+#define ISROOTEDPATH(s) ISABSPATH(s)
+#define FILECHCONV(c)	c
+#define FILECMP(s1, s2) strcmp(s1, s2)
+#define FILENCMP(s1, s2, n) strncmp(s1, s2, n)
+#define ksh_strchr_dirsep(p)   strchr(p, DIRSEP)
+#define ksh_strrchr_dirsep(p)  strrchr(p, DIRSEP)
 
 typedef int bool_t;
 #define	FALSE	0

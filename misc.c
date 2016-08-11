@@ -288,14 +288,10 @@ change_flag(enum sh_flag f,
 #endif /* EDIT */
 	/* Turning off -p? */
 	if (f == FPRIVILEGED && oldval && !newval) {
-#ifdef OS2
-		;
-#else /* OS2 */
 		seteuid(ksheuid = kshuid = getuid());
 		setuid(ksheuid);
 		setegid(kshegid = kshgid = getgid());
 		setgid(kshegid);
-#endif /* OS2 */
 	} else if (f == FPOSIX && newval) {
 #ifdef BRACE_EXPAND
 		Flag(FBRACEEXPAND) = 0

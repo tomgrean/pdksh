@@ -161,18 +161,18 @@ tags: $(SRCS) $(HDRS)
 	cd $(srcdir) && ctags -wt $(SRCS) $(HDRS)
 
 clean:
-	rm -f ksh$(exe_suffix) sh$(exe_suffix) ksh.1 sh.1 $(OBJS) siglist.out \
+	rm -f kash$(exe_suffix) sh$(exe_suffix) kash.1 sh.1 $(OBJS) siglist.out \
 	      emacs.out core a.out mon.out gmon.out \
 	      version.c.bak Makefile.bak Makefile.tmp check-fd$(exe_suffix) \
 	      check-pgrp$(exe_suffix) check-sigs$(exe_suffix)
 
 mostlyclean: clean
 
-distclean: clean
-	rm -f Makefile config.h stamp-h config.status config.log config.cache \
-	      tags TAGS *~
+#distclean: clean
+#	rm -f Makefile config.h stamp-h config.status config.log config.cache \
+#	      tags TAGS *~
 
-realclean: distclean
+#realclean: distclean
 
 dist: $(DISTFILES) $(ETCFILES) $(MISCFILES) $(TESTFILES) $(OS2FILES)
 	cd $(srcdir) && \

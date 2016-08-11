@@ -134,15 +134,7 @@ c_cd(char **wp)
 		setstr(oldpwd_s, current_wd, KSH_RETURN_ERROR);
 
 	if (!ISABSPATH(Xstring(xs, xp))) {
-#ifdef OS2
-		/* simplify_path() doesn't know about os/2's drive contexts,
-		 * so it can't set current_wd when changing to a:foo.
-		 * Handle this by calling getcwd()...
-		 */
-		pwd = ksh_get_wd((char *) 0, 0);
-#else /* OS2 */
 		pwd = (char *) 0;
-#endif /* OS2 */
 	} else
 #ifdef S_ISLNK
 	if (!physical || !(pwd = get_phys_path(Xstring(xs, xp))))
@@ -271,11 +263,7 @@ c_print(char **wp)
 		}
 	} else {
 		int optc;
-#if OS2
-		const char *options = "Rnpfrsu,"; /* added f flag */
-#else
 		const char *options = "Rnprsu,";
-#endif
 		while ((optc = ksh_getopt(wp, &builtin_opt, options)) != EOF)
 			switch (optc) {
 			  case 'R': /* fake BSD echo command */
@@ -286,11 +274,6 @@ c_print(char **wp)
 			  case 'e':
 				flags |= PO_EXPAND;
 				break;
-#ifdef OS2
-			  case 'f':
-				flags |= PO_FSLASH;
-				break;
-#endif
 			  case 'n':
 				flags &= ~PO_NL;
 				break;
@@ -336,13 +319,6 @@ c_print(char **wp)
 		s = *wp;
 		while ((c = *s++) != '\0') {
 			Xcheck(xs, xp);
-#ifdef OS2
-			if ((flags & PO_FSLASH) && c == '\\') 
-				if (*s == '\\')
-					*s++;
-				else
-					c = '/';
-#endif /* OS2 */
 			if ((flags & PO_EXPAND) && c == '\\') {
 				int i;
 

@@ -647,10 +647,6 @@ exchild(struct op *t, int flags, volatile int *xerrok,
 		Flag(FMONITOR) = 0;
 #endif /* JOBS */
 		Flag(FTALKING) = 0;
-#ifdef OS2
-		if (tty_fd >= 0)
-			flags |= XINTACT;
-#endif /* OS2 */
 		tty_close();
 		cleartraps();
 		execute(t, (flags & XERROK) | XEXEC, xerrok); /* no return */

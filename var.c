@@ -13,8 +13,8 @@
  * otherwise, (val.s + type) contains string value.
  * if (flag&EXPORT), val.s contains "name=value" for E-Z exporting.
  */
-static	struct tbl vtemp;
-static	struct table specials;
+static struct tbl vtemp;
+static struct table specials;
 static char	*formatstr(struct tbl *vp, const char *s);
 static void	export(struct tbl *vp, const char *val);
 static int	special(const char *name);
