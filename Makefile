@@ -7,6 +7,8 @@ srcdir = .
 
 CC = gcc
 CPP = gcc -E
+#CC = clang
+#CPP = clang -E
 
 INSTALL = /usr/bin/install -c
 INSTALL_PROGRAM = ${INSTALL}

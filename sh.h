@@ -490,9 +490,9 @@ enum sh_flag {
 extern	char shell_flags [FNFLAGS];
 
 extern char null[];	/* null value for variable */
-extern char space[];
-extern char newline[];
-extern char slash[];
+extern const char space[];
+extern const char newline[];
+extern const char slash[];
 
 enum temp_type {
     TT_HEREDOC_EXP,	/* expanded heredoc */
