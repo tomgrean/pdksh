@@ -24,11 +24,12 @@ CPP="${1-cc -E}"
 #endif/') > $in
 $CPP $in  > $out
 
-awk '/{ QwErTy/{a=1;printf "{";next}
+awk '/{ QwErTy.*}/{print;next;}
+/{ QwErTy/{a=1;printf "{";next}
 a>0 && !/^#/ {
   printf $0;
   if($NF=="},"){printf "\n";a=0;}
-}' $out |
+}' $out | sed 's/ QwErTy//g' |
 sort -k 2n |
 awk 'BEGIN { last=0; } {
 if ($2 ~ /^[0-9][0-9]*$/ && $3 == ",") {
@@ -40,6 +41,5 @@ if ($2 ~ /^[0-9][0-9]*$/ && $3 == ",") {
     print;
   }
 }
-}' |
-tr '`' '"' | grep -v '"DUMMY"'
+}' | grep -v '"DUMMY"'
 ecode=0
