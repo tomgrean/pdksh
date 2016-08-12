@@ -708,7 +708,7 @@ main(int argc, char **argv)
 				exit(1);
 			}
 			info[ident].value = alloc(info[ident].size = size, &a);
-			printf("%p = alloc(%d) [%d,i%d]\n", 
+			printf("%p = alloc(%d) [%d,i%d]\n",
 				info[ident].value, info[ident].size,
 				lineno, ident);
 			memset(info[ident].value, 1, size);
@@ -736,7 +736,7 @@ main(int argc, char **argv)
 			info[ident].value = aresize(value,
 						    info[ident].size = size,
 						    &a);
-			printf("%p = aresize(%p, %d) [%d,i%d]\n", 
+			printf("%p = aresize(%p, %d) [%d,i%d]\n",
 				info[ident].value, value, info[ident].size,
 				lineno, ident);
 			memset(info[ident].value, 1, size);

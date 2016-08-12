@@ -731,7 +731,7 @@ x_locate_word(const char *buf, int buflen, int pos, int *startp,
 #ifdef KSH_COMPLETE
 /*
 git=S!add,!commit,!status
-tar=Lxzvjf:
+tar=F_tar
 sudo=C
 */
 static struct table completes;
@@ -751,7 +751,7 @@ set_completion(const char *name, const char *opts)
 	if (!(name && opts))
 		return 3;
 
-	if (!('C' == *opts || 'S' == *opts || 'L' == *opts))
+	if (!('C' == *opts || 'S' == *opts || 'F' == *opts))
 		return 2;
 
 	n = str_save(name, APERM);
@@ -823,8 +823,8 @@ deal_with_part(const char *buf, int len)
 		completion_state.cmd_info = tsearch(&completes, opt, hash(opt));
 		if (completion_state.cmd_info) {
 		   	if ('C' != completion_state.cmd_info->type) {
-				completion_state.cmd = str_save(opt, ATEMP);
 				completion_state.state = COMP_STATE_CMD;
+				completion_state.cmd = str_save(opt, ATEMP);
 			}
 		} else {
 			completion_state.state = COMP_STATE_CMD;
@@ -835,23 +835,34 @@ deal_with_part(const char *buf, int len)
 	case COMP_STATE_USTR:
 		if (completion_state.cmd_info) {
 			int new_state = COMP_STATE_USTR;
+			int left;
 			const char *cmdl = completion_state.cmd_info->val.s;
-			int left = completion_state.cmd_info->index;
+			switch (completion_state.cmd_info->type) {
+			case 'S':
+				left = completion_state.cmd_info->index;
 
-			for (; cmdl; cmdl = get_next_opt_candi(cmdl, &left)) {
-				char token = *cmdl;
-				if (':' == token || '@' == token) {
-					++cmdl;
-					--left;
-				}
-				if (!strncmp(opt, cmdl, len)) {
-					if (':' == token) {
-						new_state = COMP_STATE_UFILE;
-					} else if ('@' == token) {
-						new_state = COMP_STATE_UCMD;
+				for (; cmdl; cmdl = get_next_opt_candi(cmdl, &left)) {
+					char token = *cmdl;
+					if (':' == token || '@' == token) {
+						++cmdl;
+						--left;
 					}
-					break;
+					if (!strncmp(opt, cmdl, len)) {
+						if (':' == token) {
+							new_state = COMP_STATE_UFILE;
+						} else if ('@' == token) {
+							new_state = COMP_STATE_UCMD;
+						}
+						break;
+					}
 				}
+				break;
+			case 'F':
+				{
+					char *ret = evalstr(cmdl, DOTILDE|DOPAT);
+					printf("=%s", ret);
+				}
+				break;
 			}
 			completion_state.state = new_state;
 		}
@@ -877,12 +888,13 @@ parse_input_str(const char *buf, const char *max)
 				ret = deal_with_part(buf, end - buf);
 				if (ret)
 					return ret;
+				space_flag = 1;
 			}
-			space_flag = 1;
 		} else {
-			if (space_flag)
+			if (space_flag) {
 				buf = end;
-			space_flag = 0;
+				space_flag = 0;
+			}
 		}
 	}
 	return 0;

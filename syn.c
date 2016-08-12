@@ -787,7 +787,7 @@ compile(Source *s)
  *	a=[ab]
  *	$ x=typeset; $x a=[ab]; echo "$a"
  *	a=a
- *	$ 
+ *	$
  */
 static int
 assign_command(char *s)

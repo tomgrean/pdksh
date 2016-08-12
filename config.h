@@ -83,7 +83,7 @@
 /* #undef DUP2_BROKEN */
 
 /* Define as the return value of signal handlers (0 or ).  */
-#define RETSIGVAL 
+#define RETSIGVAL
 
 /* Define if you have posix signal routines (sigaction(), et. al.) */
 #define POSIX_SIGNALS 1

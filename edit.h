@@ -5,7 +5,7 @@
  *      This header defines various global edit objects.
  *
  * SEE ALSO:
- *      
+ *
  *
  * RCSid:
  *      $Id: edit.h,v 1.2 1994/05/19 18:32:40 michael Exp michael $

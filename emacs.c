@@ -77,7 +77,7 @@ static char    *xbp;		/* start of visible portion of input buffer */
 static char    *xlp;		/* last char visible on screen */
 static int	x_adj_ok;
 /*
- * we use x_adj_done so that functions can tell 
+ * we use x_adj_done so that functions can tell
  * whether x_adjust() has been called while they are active.
  */
 static int	x_adj_done;
@@ -550,7 +550,7 @@ x_delete(nc, force_push)
 {
 	int	i,j;
 	char	*cp;
-	
+
 	if (nc == 0)
 		return;
 	if (xmp != NULL && xmp > xcp) {
@@ -597,7 +597,7 @@ x_delete(nc, force_push)
 	for (cp = x_lastcp(); cp > xcp; )
 		x_bs(*--cp);
 
-	return;	
+	return;
 }
 
 static int
@@ -869,7 +869,7 @@ static int x_end_hist(c) int c; { x_load_hist(histptr); return KSTD;}
 static int x_prev_com(c) int c; { x_load_hist(x_histp - x_arg); return KSTD;}
 
 static int x_next_com(c) int c; { x_load_hist(x_histp + x_arg); return KSTD;}
-  
+
 /* Goto a particular history number obtained from argument.
  * If no argument is given history 1 is probably not what you
  * want so we'll simply go to the oldest one.
@@ -1080,11 +1080,11 @@ x_redraw(limit)
 {
 	int	i, j;
 	char	*cp;
-	
+
 	x_adj_ok = 0;
 	if (limit == -1)
 		x_e_putc('\n');
-	else 
+	else
 		x_e_putc('\r');
 	x_flush();
 	if (xbp == xbuf)
@@ -1961,10 +1961,10 @@ do_complete(flags, type)
  *      x_adjust - redraw the line adjusting starting point etc.
  *
  * DESCRIPTION:
- *      This function is called when we have exceeded the bounds 
- *      of the edit window.  It increments x_adj_done so that 
- *      functions like x_ins and x_delete know that we have been 
- *      called and can skip the x_bs() stuff which has already 
+ *      This function is called when we have exceeded the bounds
+ *      of the edit window.  It increments x_adj_done so that
+ *      functions like x_ins and x_delete know that we have been
+ *      called and can skip the x_bs() stuff which has already
  *      been done by x_redraw.
  *
  * RETURN VALUE:
@@ -1998,7 +1998,7 @@ static int
 x_e_getc()
 {
 	int c;
-	
+
 	if (unget_char >= 0) {
 		c = unget_char;
 		unget_char = -1;
@@ -2133,11 +2133,11 @@ x_comment(c)
  *      x_prev_histword - recover word from prev command
  *
  * DESCRIPTION:
- *      This function recovers the last word from the previous 
- *      command and inserts it into the current edit line.  If a 
- *      numeric arg is supplied then the n'th word from the 
- *      start of the previous command is used.  
- *      
+ *      This function recovers the last word from the previous
+ *      command and inserts it into the current edit line.  If a
+ *      numeric arg is supplied then the n'th word from the
+ *      start of the previous command is used.
+ *
  *      Bound to M-.
  *
  * RETURN VALUE:
@@ -2168,7 +2168,7 @@ x_prev_histword(c)
     x_ins(rcp);
   } else {
     int c;
-    
+
     rcp = cp;
     /*
      * ignore white-space at start of line
@@ -2233,7 +2233,7 @@ x_fold_case(c)
 	int c;
 {
 	char *cp = xcp;
-	
+
 	if (cp == xep) {
 		x_e_putc(BEL);
 		return KSTD;
@@ -2283,13 +2283,13 @@ x_fold_case(c)
  *      x_lastcp()
  *
  * DESCRIPTION:
- *      This function returns a pointer to that  char in the 
- *      edit buffer that will be the last displayed on the 
+ *      This function returns a pointer to that  char in the
+ *      edit buffer that will be the last displayed on the
  *      screen.  The sequence:
- *      
+ *
  *      for (cp = x_lastcp(); cp > xcp; cp)
  *        x_bs(*--cp);
- *      
+ *
  *      Will position the cursor correctly on the screen.
  *
  * RETURN VALUE:

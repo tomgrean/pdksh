@@ -160,7 +160,7 @@ global(const char *n)
 	 struct block *l = e->loc;
 	 struct tbl *vp;
 	 int c;
-	unsigned h; 
+	unsigned h;
 	bool_t	 array;
 	int	 val;
 
@@ -410,7 +410,7 @@ getint(struct tbl *vp, long *nump)
 	int base, neg;
 	int have_base = 0;
 	long num;
-	
+
 	if (vp->flag&SPECIAL)
 		getspec(vp);
 	/* XXX is it possible for ISSET to be set and val.s to be 0? */
@@ -464,7 +464,7 @@ setint_v(struct tbl *vq, struct tbl *vp)
 {
 	int base;
 	long num;
-	
+
 	if ((base = getint(vp, &num)) == -1)
 		return NULL;
 	if (!(vq->flag & INTEGER) && (vq->flag & ALLOC)) {
@@ -580,7 +580,7 @@ typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 		return NULL;
 	if (*val == '[') {
 		int len;
-		
+
 		len = array_ref_len(val);
 		if (len == 0)
 			return NULL;

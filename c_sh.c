@@ -182,7 +182,7 @@ c_dot(char **wp)
 	if ((cp = wp[builtin_opt.optind]) == NULL) {
 		bi_errorf("missing argument");
 		return 1;
-	}		
+	}
 	file = search(cp, path, R_OK, &err);
 	if (file == NULL) {
 		bi_errorf("%s: %s", cp, err ? strerror(err) : "not found");
@@ -603,7 +603,7 @@ c_brkcont(char **wp)
 		 */
 		if (n == quit) {
 			warningf(TRUE, "%s: cannot %s", wp[0], wp[0]);
-			return 0; 
+			return 0;
 		}
 		/* POSIX says if n is too big, the last enclosing loop
 		 * shall be used.  Doesn't say to print an error but we
@@ -842,7 +842,7 @@ c_exec(char **wp)
 				fd_clexec(i);
 #endif /* KSH */
 		}
-		e->savefd = NULL; 
+		e->savefd = NULL;
 	}
 	return 0;
 }

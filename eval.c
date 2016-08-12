@@ -420,7 +420,7 @@ expand(char *cp,	/* input word */
 					char *s = Xrestpos(ds, dp, st->base);
 
 					errorf("%s: %s", st->var->name,
-					    dp == s ? 
+					    dp == s ?
 					      "parameter null or not set"
 					    : (debunk(s, s), s));
 				    }

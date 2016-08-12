@@ -656,13 +656,13 @@ int eaccess(const char *pathname, int mode) {
 	int need_setreuid, need_setregid;
 	int result;
 	int _errno;
-	
 
-	
+
+
 	if (( need_setregid = ( kshgid != kshegid ) )) {
 		setregid( kshegid, kshgid );
 	}
-	
+
 	if (( need_setreuid = ( kshuid  != ksheuid ) )) {
 		setreuid( ksheuid, kshuid );
 	}
@@ -673,7 +673,7 @@ int eaccess(const char *pathname, int mode) {
 	if ( need_setregid ) {
 		setregid( kshgid, kshegid );
 	}
-	
+
 	if ( need_setreuid ) {
 		setreuid( kshuid, ksheuid );
 	}
@@ -681,4 +681,4 @@ int eaccess(const char *pathname, int mode) {
 	errno = _errno;
 	return result;
 }
-#endif	
+#endif

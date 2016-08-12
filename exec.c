@@ -97,7 +97,7 @@ execute(struct op *volatile t,
 	newenv(E_EXEC);
 	if (trap)
 		runtraps(0);
- 
+
 	if (t->type == TCOM) {
 		/* Clear subst_exstat before argument expansion.  Used by
 		 * null commands (see comexec() and c_eval()) and by c_set().
@@ -147,7 +147,7 @@ execute(struct op *volatile t,
 				goto Break;
 			}
 		}
-	
+
 	switch(t->type) {
 	  case TCOM:
 		rv = comexec(t, tp, ap, flags, xerrok);

@@ -198,7 +198,7 @@ c_ulimit(char **wp)
 				int getreturn;
 
 				getreturn=getrlimit(l->gcmd, &limit);
-#ifdef RLIMIT_LOCKS				
+#ifdef RLIMIT_LOCKS
 				if ( getreturn < 0 ) {
 					if ( ( errno == EINVAL ) &&
 					     ( l->gcmd == RLIMIT_LOCKS ) ) {
@@ -206,12 +206,12 @@ c_ulimit(char **wp)
 						limit.rlim_max = RLIM_INFINITY;
 					}
 				}
-#endif				
+#endif
 				if (how & SOFT)
 					val = limit.rlim_cur;
 				else if (how & HARD)
 					val = limit.rlim_max;
-			} else 
+			} else
 #endif /* HAVE_SETRLIMIT */
 #ifdef HAVE_ULIMIT
 			{
@@ -244,7 +244,7 @@ c_ulimit(char **wp)
 			if (setrlimit(l->scmd, &limit) < 0) {
 				if (errno == EPERM) {
 					bi_errorf("exceeds allowable limit");
-#ifdef RLIMIT_LOCKS					
+#ifdef RLIMIT_LOCKS
 				} else if ( ( errno == EINVAL ) &&
 				     ( l->scmd == RLIMIT_LOCKS ) ) {
 					bi_errorf("unable to set it on the current kernel");

@@ -5,16 +5,16 @@
  *      #include "sigact.h"
  *
  * DESCRIPTION:
- *      This header is the interface to a fake sigaction(2) 
- *      implementation. It provides a POSIX compliant interface 
+ *      This header is the interface to a fake sigaction(2)
+ *      implementation. It provides a POSIX compliant interface
  *      to whatever signal handling mechanisms are available.
- *      It also provides a Signal() function that is implemented 
+ *      It also provides a Signal() function that is implemented
  *      in terms of sigaction().
- *      If not using signal(2) as part of the underlying 
- *      implementation (USE_SIGNAL or USE_SIGMASK), and 
- *      NO_SIGNAL is not defined, it also provides a signal() 
- *      function that calls Signal(). 
- *      
+ *      If not using signal(2) as part of the underlying
+ *      implementation (USE_SIGNAL or USE_SIGMASK), and
+ *      NO_SIGNAL is not defined, it also provides a signal()
+ *      function that calls Signal().
+ *
  * SEE ALSO:
  *      sigact.c
  */
@@ -52,14 +52,14 @@ handler_t Signal(int sig, handler_t disp);
 #ifndef SIGKILL
 # include <signal.h>
 #endif
-  
+
 #ifndef SIG_ERR
 # define SIG_ERR  ((handler_t) -1)
 #endif
 #ifndef BADSIG
 # define BADSIG  SIG_ERR
 #endif
-    
+
 #ifndef SA_NOCLDSTOP
 /* we assume we need the fake sigaction */
 /* sa_flags */
@@ -79,7 +79,7 @@ handler_t Signal(int sig, handler_t disp);
 typedef unsigned int sigset_t;
 #endif
 #endif /* 0 */
-  
+
 /*
  * POSIX sa_handler should return void, but since we are
  * implementing in terms of something else, it may
@@ -106,7 +106,7 @@ int	sigpending( sigset_t *set );
 #endif /* IS_KSH */
 int	sigprocmask( int how, sigset_t *set, sigset_t *oset );
 int	sigsuspend( sigset_t *mask );
-	
+
 #ifndef sigmask
 # define sigmask(s)	(1<<((s)-1))	/* convert SIGnum to mask */
 #endif
