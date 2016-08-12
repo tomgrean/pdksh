@@ -31,7 +31,7 @@ static struct tbl *arraysearch(struct tbl *, int);
 void
 newblock(void)
 {
-	 struct block *l;
+	struct block *l;
 	static char *const empty[] = {null};
 
 	l = (struct block *) alloc(sizeof(struct block), ATEMP);

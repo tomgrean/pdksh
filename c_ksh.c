@@ -1151,7 +1151,7 @@ int
 c_kill(char **wp)
 {
 	Trap *t = (Trap *) 0;
-	char *p;
+	const char *p;
 	int lflag = 0;
 	int i, n, rv, sig;
 

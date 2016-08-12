@@ -30,9 +30,9 @@ struct env *e;
 char shell_flags [FNFLAGS];
 
 char null[] = "";	/* null value for variable */
-char space[] = " ";
-char newline[] = "\n";
-char slash[] = "/";
+const char space[] = " ";
+const char newline[] = "\n";
+const char slash[] = "/";
 
 int shl_stdout_ok;
 
