@@ -816,7 +816,7 @@ scriptexec(struct op *tp, char **ap)
 int
 shcomexec(char **wp)
 {
-	 struct tbl *tp;
+	struct tbl *tp;
 
 	tp = tsearch(&builtins, *wp, hash(*wp));
 	if (tp == NULL)

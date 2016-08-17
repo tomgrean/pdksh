@@ -611,8 +611,7 @@ x_command_glob(int flags, const char *str, int slen, char ***wordsp)
 	struct block *l;
 
 	/* Don't do command globing on zero length strings - it takes too
-	 * long and isn't very useful.  File globs are more likely to be
-	 * useful, so allow these.
+	 * long and isn't very useful.
 	 */
 	if (slen <= 0)
 		return 0;
@@ -783,6 +782,7 @@ set_completion(const char *name, const char *opts)
 #define COMP_STATE_USTR  3
 #define COMP_STATE_UFILE 4
 #define COMP_STATE_UCMD  5
+#define COMP_STATE_UFUNC 6
 
 static struct {
 	char *cmd;
@@ -831,15 +831,24 @@ deal_with_part(const char *buf, int len)
 			completion_state.cmd = str_save(opt, ATEMP);
 		}
 		break;
-	case COMP_STATE_CMD:
+	case COMP_STATE_UCMD:
+		completion_state.state = COMP_STATE_UFILE;
+		/* fall through */
+	case COMP_STATE_UFILE:
 	case COMP_STATE_USTR:
+		if ('-' != opt[0]) {
+			break;
+		}
+		/* fall through */
+	case COMP_STATE_CMD:
 		if (completion_state.cmd_info) {
 			int new_state = COMP_STATE_USTR;
 			int left;
-			const char *cmdl = completion_state.cmd_info->val.s;
+			const char *cmdl;
 			switch (completion_state.cmd_info->type) {
 			case 'S':
 				left = completion_state.cmd_info->index;
+				cmdl = completion_state.cmd_info->val.s;
 
 				for (; cmdl; cmdl = get_next_opt_candi(cmdl, &left)) {
 					char token = *cmdl;
@@ -858,21 +867,14 @@ deal_with_part(const char *buf, int len)
 				}
 				break;
 			case 'F':
-				{
-					char *ret = evalstr(cmdl, DOTILDE|DOPAT);
-					printf("=%s", ret);
-				}
-				break;
+				completion_state.state = COMP_STATE_UFUNC;
+				return 1;/* quick fall back to user function call. */
 			}
 			completion_state.state = new_state;
 		}
 		break;
 	case COMP_STATE_FILE:
 		return 0;
-	case COMP_STATE_UCMD:
-	case COMP_STATE_UFILE:
-		completion_state.state = COMP_STATE_USTR;
-		break;
 	}
 	return 0;
 }
@@ -924,10 +926,13 @@ x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int
 			break;
 		case COMP_STATE_FILE:
 		case COMP_STATE_UFILE:
-			break;
-		case COMP_STATE_CMD:
+			if ('-' != *str) {
+				break;
+			}
+			/* fall through */
 		case COMP_STATE_USTR:
-			if (completion_state.cmd_info) {
+		case COMP_STATE_CMD:
+			if (completion_state.cmd_info && 'S' == completion_state.cmd_info->type) {
 				const char *p = completion_state.cmd_info->val.s;
 				int left = completion_state.cmd_info->index;
 				XPinit(w, 16);
@@ -951,6 +956,30 @@ x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int
 				*wordsp = (char**)XPclose(w);
 				return left;
 			}
+			break;
+		case COMP_STATE_UFUNC:
+			ret = 0;
+#if 0
+			if (completion_state.cmd_info) {
+				char *pp, *runbuf;
+				const int cmd_length = str - buf + slen + 5 + completion_state.cmd_info->index;
+				/*
+				struct tbl *f;
+				f = findfunc(completion_state.cmd_info->val.s, hash(completion_state.cmd_info->val.s), 0);
+				if (NULL == f) {
+					// error dealer
+					break;
+				}
+				*/
+				
+				runbuf = alloc(cmd_length, ATEMP);
+				snprintf(runbuf, cmd_length, "$(%s %s)", completion_state.cmd_info->val.s, buf);
+				runbuf[cmd_length - 1] = '\0';
+				pp = evalstr(runbuf, DOBLANK|DOGLOB|DOPAT|DOTEMP_|DOMAGIC_|DOBRACE_|DOASNTILDE);
+				afree(runbuf, ATEMP);
+				printf("run buf=%s\n", pp);
+			}
+#endif
 			break;
 		default:
 			*is_commandp = 0;
