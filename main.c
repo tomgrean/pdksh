@@ -484,7 +484,7 @@ include(const char *name, int argc, char **argv, int intr_ok)
 int
 command(const char *comm)
 {
-	 Source *s;
+	Source *s;
 
 	s = pushs(SSTRING, ATEMP);
 	s->start = s->str = comm;
@@ -635,7 +635,7 @@ unwind(int i)
 void
 newenv(int type)
 {
-	 struct env *ep;
+	struct env *ep;
 
 	ep = (struct env *) alloc(sizeof(*ep), ATEMP);
 	ep->type = type;
@@ -651,8 +651,8 @@ newenv(int type)
 void
 quitenv(void)
 {
-	 struct env *ep = e;
-	 int fd;
+	struct env *ep = e;
+	int fd;
 
 	if (ep->oenv && ep->oenv->loc != ep->loc)
 		popblock();

@@ -57,9 +57,9 @@ newblock(void)
 void
 popblock(void)
 {
-	 struct block *l = e->loc;
-	 struct tbl *vp, **vpp = l->vars.tbls, *vq;
-	 int i;
+	struct block *l = e->loc;
+	struct tbl *vp, **vpp = l->vars.tbls, *vq;
+	int i;
 
 	e->loc = l->next;	/* pop block */
 	for (i = l->vars.size; --i >= 0; )
@@ -157,9 +157,9 @@ array_index_calc(const char *n, bool_t *arrayp, int *valp)
 struct tbl *
 global(const char *n)
 {
-	 struct block *l = e->loc;
-	 struct tbl *vp;
-	 int c;
+	struct block *l = e->loc;
+	struct tbl *vp;
+	int c;
 	unsigned h;
 	bool_t	 array;
 	int	 val;
@@ -239,8 +239,8 @@ global(const char *n)
 struct tbl *
 local(const char *n, bool_t copy)
 {
-	 struct block *l = e->loc;
-	 struct tbl *vp;
+	struct block *l = e->loc;
+	struct tbl *vp;
 	unsigned h;
 	bool_t	 array;
 	int	 val;
@@ -405,8 +405,8 @@ setint(struct tbl *vq, long n)
 int
 getint(struct tbl *vp, long *nump)
 {
-	 char *s;
-	 int c;
+	char *s;
+	int c;
 	int base, neg;
 	int have_base = 0;
 	long num;
@@ -545,7 +545,7 @@ formatstr(struct tbl *vp, const char *s)
 static void
 export(struct tbl *vp, const char *val)
 {
-	 char *xp;
+	char *xp;
 	char *op = (vp->flag&ALLOC) ? vp->val.s : NULL;
 	int namelen = strlen(vp->name);
 	int vallen = strlen(val) + 1;
@@ -569,7 +569,7 @@ export(struct tbl *vp, const char *val)
 struct tbl *
 typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 {
-	 struct tbl *vp;
+	struct tbl *vp;
 	struct tbl *vpbase, *t;
 	char *tvar;
 	const char *val;
@@ -816,8 +816,8 @@ makenv(void)
 {
 	struct block *l = e->loc;
 	XPtrV env;
-	 struct tbl *vp, **vpp;
-	 int i;
+	struct tbl *vp, **vpp;
+	int i;
 
 	XPinit(env, 64);
 	for (l = e->loc; l != NULL; l = l->next)
@@ -867,7 +867,7 @@ change_random(void)
 static int
 special(const char *name)
 {
-	 struct tbl *tp;
+	struct tbl *tp;
 
 	tp = tsearch(&specials, name, hash(name));
 	return tp && (tp->flag & ISSET) ? tp->type : V_NONE;
@@ -877,7 +877,7 @@ special(const char *name)
 static void
 unspecial(const char *name)
 {
-	 struct tbl *tp;
+	struct tbl *tp;
 
 	tp = tsearch(&specials, name, hash(name));
 	if (tp)
