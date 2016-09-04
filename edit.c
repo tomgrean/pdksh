@@ -822,7 +822,11 @@ create_argv(const char *buf, int len)
 		}
 	}
 
-	temp = str_nsave(buf, len, ATEMP);
+	if (len > 0) {
+		temp = str_nsave(buf, len, ATEMP);
+	} else {
+		temp = null;
+	}
 	if (temp) {
 		e->loc->argv[argc] = temp;
 		e->loc->argc = 1 + argc;
@@ -998,11 +1002,18 @@ x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int
 						break;
 					}
 					newenv(E_FUNC);
+					newblock();
 					e->loc->argc = 0;
 					e->loc->argv = alloc(sizeof(char*) * 8, ATEMP);
 					parse_input_str(buf, str + slen - 1, 1, create_argv);
+					/* special case when slen is 0 */
+					if (0 == slen) {
+						/* add a empty string arg */
+						create_argv(NULL, 0);
+					}
 					e->loc->argv[e->loc->argc--] = NULL;
 					execute(f->val.t, 0, NULL);
+					popblock();
 					quitenv();
 					f = global("_COMPLETE");
 					if (f) {

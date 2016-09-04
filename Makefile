@@ -18,7 +18,7 @@ DEFS = -DHAVE_CONFIG_H
 LIBS = 
 
 CPPFLAGS = 
-CFLAGS = -Wall -g -O0
+CFLAGS = -Wall -g -O1
 LDSTATIC = 
 LDFLAGS = 
 
