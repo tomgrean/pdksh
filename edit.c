@@ -835,6 +835,15 @@ create_argv(const char *buf, int len)
 	return 2;
 }
 static int
+create_cmd_argv(const char *buf, int len)
+{
+	/* skip prefix 'sudo' */
+	if (0 == e->loc->argc && strncmp(buf, completion_state.cmd, len))
+		return 0;
+	return create_argv(buf, len);
+}
+
+static int
 deal_with_part(const char *buf, int len)
 {
 	char opt[16];
@@ -1005,7 +1014,7 @@ x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int
 					newblock();
 					e->loc->argc = 0;
 					e->loc->argv = alloc(sizeof(char*) * 8, ATEMP);
-					parse_input_str(buf, str + slen - 1, 1, create_argv);
+					parse_input_str(buf, str + slen - 1, 1, create_cmd_argv);
 					/* special case when slen is 0 */
 					if (0 == slen) {
 						/* add a empty string arg */
