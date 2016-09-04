@@ -812,21 +812,23 @@ create_argv(const char *buf, int len)
 {
 	char *temp;
 	int argc = e->loc->argc;
-	/*
-	if (argc == 8 || argc == 16) {
-		e->loc->argv = aresize(e->loc->argv, (argc + 1) << 1, ATEMP);
+	int i;
+
+	/* min 2^3=8 */
+	for (i = 8; i <= argc; i <<= 1) {
+		if (i == argc) {
+			e->loc->argv = aresize(e->loc->argv, sizeof(char*) * (argc<<1), ATEMP);
+			break;
+		}
 	}
-	*/
-	/* no more than 31 arguments. */
-	if (argc > 32) {
-		return 1;
-	}
+
 	temp = str_nsave(buf, len, ATEMP);
 	if (temp) {
 		e->loc->argv[argc] = temp;
 		e->loc->argc = 1 + argc;
+		return 0;
 	}
-	return 0;
+	return 2;
 }
 static int
 deal_with_part(const char *buf, int len)
@@ -901,7 +903,7 @@ deal_with_part(const char *buf, int len)
 }
 
 static int
-parse_input_str(const char *buf, const char *max,
+parse_input_str(const char *buf, const char *max, int parse_last,
 		int (*call_back_func)(const char *buf, int len))
 {
 	const char *end;
@@ -923,7 +925,7 @@ parse_input_str(const char *buf, const char *max,
 			}
 		}
 	}
-	if (0 == space_flag) {
+	if (0 == space_flag && parse_last) {
 		return call_back_func(buf, end - buf);
 	}
 	return 0;
@@ -946,7 +948,7 @@ x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int
 	if (buf == str) {
 		ret = 0;
 	} else {
-		ret = parse_input_str(buf, str, deal_with_part);
+		ret = parse_input_str(buf, str, 0, deal_with_part);
 	}
 
 	if (ret >= 0) {
@@ -963,72 +965,69 @@ x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int
 			/* fall through */
 		case COMP_STATE_USTR:
 		case COMP_STATE_CMD:
-			if (completion_state.cmd_info && 'S' == completion_state.cmd_info->type) {
-				const char *p = completion_state.cmd_info->val.s;
-				int left = completion_state.cmd_info->index;
-				XPinit(w, 16);
-				for (; p; p = get_next_opt_candi(p, &left)) {
-					if (':' == *p || '@' == *p) {
-						++p;
-						--left;
-					}
-					if (!strncmp(p, str, slen)) {
-						XPput(w, str_save(p, ATEMP));
-					}
-				}
-				left = XPsize(w);
-				if (left <= 0) {
-					*wordsp = NULL;
-					XPfree(w);
-					*is_commandp = 0;
-					return -1;
-				}
-				XPput(w, NULL);
-				*wordsp = (char**)XPclose(w);
-				return left;
-			}
-			break;
 		case COMP_STATE_UFUNC:
-			ret = 0;
-#if 1
 			if (completion_state.cmd_info) {
-				struct tbl *f;
-				f = findfunc(completion_state.cmd_info->val.s, hash(completion_state.cmd_info->val.s), 0);
-				if (NULL == f) {
-					// error dealer
-					break;
-				}
-				newenv(E_FUNC);
-				e->loc->argc = 0;
-				e->loc->argv = alloc(sizeof(char*)*8, ATEMP);
-				parse_input_str(buf, str + slen, create_argv);
-				e->loc->argv[e->loc->argc] = NULL;
-				execute(f->val.t, 0, NULL);
-				quitenv();
-				f = global("_COMPLETE");
-				if (f) {
-					int i;
-					int oldargc = e->loc->argc;
-					char **oldargv = e->loc->argv;
-					char *val = str_val(f);
+				if ('S' == completion_state.cmd_info->type) {
+					const char *p = completion_state.cmd_info->val.s;
+					int left = completion_state.cmd_info->index;
 					XPinit(w, 16);
-					//newenv(E_NONE);
-					e->loc->argc = 0;
-					e->loc->argv = alloc(sizeof(char*)*32, ATEMP);
-					parse_input_str(val, val + strlen(val), create_argv);
-					e->loc->argv[e->loc->argc] = NULL;
-					for (i = 0; i < e->loc->argc; i++) {
-						XPput(w, e->loc->argv[i]);
+					for (; p; p = get_next_opt_candi(p, &left)) {
+						if (':' == *p || '@' == *p) {
+							++p;
+							--left;
+						}
+						if (!strncmp(p, str, slen)) {
+							XPput(w, str_save(p, ATEMP));
+						}
 					}
-					//quitenv();
+					left = XPsize(w);
+					if (left <= 0) {
+						*wordsp = NULL;
+						XPfree(w);
+						*is_commandp = 0;
+						return -1;
+					}
 					XPput(w, NULL);
 					*wordsp = (char**)XPclose(w);
-					ret = i;
-					e->loc->argc = oldargc;
-					e->loc->argv = oldargv;
+					return left;
+				} else if ('F' == completion_state.cmd_info->type) {
+					struct tbl *f;
+					f = findfunc(completion_state.cmd_info->val.s, hash(completion_state.cmd_info->val.s), 0);
+					if (NULL == f) {
+						// error dealer
+						break;
+					}
+					newenv(E_FUNC);
+					e->loc->argc = 0;
+					e->loc->argv = alloc(sizeof(char*) * 8, ATEMP);
+					parse_input_str(buf, str + slen - 1, 1, create_argv);
+					e->loc->argv[e->loc->argc--] = NULL;
+					execute(f->val.t, 0, NULL);
+					quitenv();
+					f = global("_COMPLETE");
+					if (f) {
+						int i;
+						int oldargc = e->loc->argc;
+						char **oldargv = e->loc->argv;
+						char *val = str_val(f);
+						XPinit(w, 16);
+						//newenv(E_NONE);
+						e->loc->argc = 0;
+						e->loc->argv = alloc(sizeof(char*) * 8, ATEMP);
+						parse_input_str(val, val + strlen(val), 1, create_argv);
+						e->loc->argv[e->loc->argc] = NULL;
+						for (i = 0; i < e->loc->argc; i++) {
+							XPput(w, e->loc->argv[i]);
+						}
+						//quitenv();
+						XPput(w, NULL);
+						*wordsp = (char**)XPclose(w);
+						ret = i;
+						e->loc->argc = oldargc;
+						e->loc->argv = oldargv;
+					}
 				}
 			}
-#endif
 			break;
 		default:
 			*is_commandp = 0;
