@@ -47,7 +47,7 @@ static int	Backword(int argcnt);
 static int	Endword(int argcnt);
 static int	grabhist(int save, int n);
 static int	grabsearch(int save, int start, int fwd, char *pat);
-static void	redraw_line(int newline);
+static void	redraw_line(int draw_newline);
 static void	refresh(int leftside);
 static int	outofwin(void);
 static void	rewindow(void);
@@ -1800,10 +1800,10 @@ grabsearch(int save, int start, int fwd, char *pat)
 }
 
 static void
-redraw_line(int newline)
+redraw_line(int draw_newline)
 {
 	(void) memset(wbuf[win], ' ', wbuf_len);
-	if (newline) {
+	if (draw_newline) {
 		x_putc('\r');
 		x_putc('\n');
 	}
