@@ -729,7 +729,7 @@ x_locate_word(const char *buf, int buflen, int pos, int *startp,
 }
 #ifdef KSH_COMPLETE
 /*
-git=S!add,!commit,!status
+git=S:add,:commit,:status
 tar=F_tar
 sudo=C
 */
@@ -750,7 +750,7 @@ set_completion(const char *name, const char *opts)
 	if (!(name && opts))
 		return 3;
 
-	if (!('C' == *opts || 'S' == *opts || 'F' == *opts))
+	if ('F' != *opts && 'S' != *opts && 'C' != *opts)
 		return 2;
 
 	n = str_save(name, APERM);
@@ -796,7 +796,7 @@ reset_comp_state(void)
 	memset(&completion_state, 0, sizeof(completion_state));
 }
 static const char*
-get_next_opt_candi(const char *str, int *lenp) {
+get_next_opt_candidate(const char *str, int *lenp) {
 	while (*str && *lenp > 0) {
 		++str;
 		--*lenp;
@@ -837,7 +837,7 @@ create_argv(const char *buf, int len)
 static int
 create_cmd_argv(const char *buf, int len)
 {
-	/* skip prefix 'sudo' */
+	/* skip prefix 'sudo',etc. */
 	if (0 == e->loc->argc && strncmp(buf, completion_state.cmd, len))
 		return 0;
 	return create_argv(buf, len);
@@ -886,7 +886,7 @@ deal_with_part(const char *buf, int len)
 				left = completion_state.cmd_info->index;
 				cmdl = completion_state.cmd_info->val.s;
 
-				for (; cmdl; cmdl = get_next_opt_candi(cmdl, &left)) {
+				for (; cmdl; cmdl = get_next_opt_candidate(cmdl, &left)) {
 					char token = *cmdl;
 					if (':' == token || '@' == token) {
 						++cmdl;
@@ -984,7 +984,7 @@ x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int
 					const char *p = completion_state.cmd_info->val.s;
 					int left = completion_state.cmd_info->index;
 					XPinit(w, 16);
-					for (; p; p = get_next_opt_candi(p, &left)) {
+					for (; p; p = get_next_opt_candidate(p, &left)) {
 						if (':' == *p || '@' == *p) {
 							++p;
 							--left;

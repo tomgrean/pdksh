@@ -1371,8 +1371,11 @@ c_complete(char **wp)
 	for (wp++; *wp; wp++) {
 		cp = strchr(*wp, '=');
 		if (cp) {
+			int ret;
 			*cp++ = '\0';
-			set_completion(*wp, cp);
+			ret = set_completion(*wp, cp);
+			if (ret)
+				return ret;
 		} else {
 			return 1;
 		}
