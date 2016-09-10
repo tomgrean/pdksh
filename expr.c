@@ -549,7 +549,7 @@ assign_check(Expr_state *es, enum token op, struct tbl *vasn)
 static struct tbl *
 tempvar(void)
 {
-	 struct tbl *vp;
+	struct tbl *vp;
 
 	vp = (struct tbl*) alloc(sizeof(struct tbl), ATEMP);
 	vp->flag = ISSET|INTEGER;

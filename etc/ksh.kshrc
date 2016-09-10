@@ -52,23 +52,43 @@ case "$-" in
 	tty=`tty`
 	tty=`basename $tty`
         TTY=${TTY:-$tty}
-        
-	set -o emacs
 
 	alias ls='ls -CF'
 	alias h='fc -l | more'
-	_cd() { "cd" $*; }
+	_cd() { cd $@; }
 	# the PD ksh is not 100% compatible
 	case "$KSH_VERSION" in
 	*PD*)	# PD ksh
 		case "$TERM" in
 		pc3|xterm*)
-			# bind arrow keys
-			bind '^[['=prefix-2
-			bind '^XA'=up-history
-			bind '^XB'=down-history
-			bind '^XC'=forward-char
-			bind '^XD'=backward-char
+			set -o vi
+			complete 'sudo=C'
+			complete 'git=S:add,:status,:commit,clone,:diff,:log'
+			complete 'svn=S:add,:status,:commit,checkout,@--diff-cmd,:diff,:log'
+			function _systemctl {
+			  typeset ACT='enable disable status start stop'
+			  case $# in
+			  0)  _COMPLETE="$ACT"
+			  ;;
+			  1)  typeset -i i=0
+			      typeset out a
+			      if [[ $1 == "" ]]; then
+			        _COMPLETE="$ACT"
+			      else
+			        for a in $ACT; do
+			          if [[ ${a#$1} != $a ]]; then
+			            out[$i]=$a
+			            ((i++))
+			          fi
+			        done
+			        _COMPLETE=${out[*]}
+			      fi
+			  ;;
+			  2)  _COMPLETE=$(cd /lib/systemd/system/;echo $2*)
+			  ;;
+			  esac
+			}
+			complete 'systemctl=F_systemctl'
 			;;
 		esac
 		;;
@@ -135,75 +155,16 @@ case "$-" in
 		eval istripe
 		PS1=$PROMPT
 	fi
-	alias quit=exit
 	alias cls=clear
 	alias logout=exit
 	alias bye=exit
 	alias p='ps -l'
 	alias j=jobs
 	alias o='fg %-'
-	alias ls='ls -gCF'
-
-# add your favourite aliases here
-	OS=${OS:-`uname -s`}
-	case $OS in
-	HP-UX)
-        	alias ls='ls -CF'
-                ;;
-	*BSD)
-		alias df='df -k'
-		alias du='du -k'
-		;;
-	esac	
-	alias rsize='eval `/usr/bin/X11/resize`'
-
-	case "$TERM" in
-	sun*|xterm*)
-		case $tty in
-		tty[p-w]*)		
-			case "$DISPLAY" in
-			"")
-				DISPLAY="`who | grep $TTY | sed -n 's/.*(\([^:)]*\)[:)].*/\1/p' | sed 's/\([a-zA-Z][^.]*\).*/\1/'`:0"
-				;;
-			esac
-			;;
-		esac
-		case "$DISPLAY" in
-		ozen*|:*)
-			stty erase "^?"
-			;;
-		*)
-			stty erase "^h"
-			;;
-		esac
-		export DISPLAY
-		;;
-	esac
-
 ;;
 *)	# non-interactive
 ;;
 esac
 # commands for both interactive and non-interactive shells
 
-# is $1 missing from $2 (or PATH) ?
-no_path () {
-  eval _v="\$${2:-PATH}"
-  case :$_v: in
-  *:$1:*) return 1;;		# no we have it
-  esac
-  return 0
-}
-# if $1 exists and is not in path, append it
-add_path () {
-  [ -d ${1:-.} ] && no_path $* && eval ${2:-PATH}="\$${2:-PATH}:$1"
-}
-# if $1 exists and is not in path, prepend it
-pre_path () {
-  [ -d ${1:-.} ] && no_path $* && eval ${2:-PATH}="$1:\$${2:-PATH}"
-}
-# if $1 is in path, remove it
-del_path () {
-  no_path $* || eval ${2:-PATH}=`eval echo :'$'${2:-PATH}: | 
-    sed -e "s;:$1:;:;g" -e "s;^:;;" -e "s;:\$;;"`
-}
+

@@ -275,8 +275,8 @@ int	array_ref_len(const char *cp);
 char *	arrayname(const char *str);
 void    set_array(const char *var, int reset, char **vals);
 /* version.c */
-/* vi.c: see edit.h */
 #ifdef KSH_COMPLETE
+/* vi.c: see edit.h */
 void	init_complete(void);
 #endif
 

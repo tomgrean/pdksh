@@ -25,9 +25,7 @@ char	*progname =	"check-fd";
 #define MAXFD	256	/* a somewhat arbitrary number */
 
 int
-main(argc, argv)
-	int argc;
-	char **argv;
+main(int argc, char **argv)
 {
 	extern int	optind;
 
@@ -74,8 +72,7 @@ main(argc, argv)
 }
 
 int
-usage(verbose)
-	int verbose;
+usage(int verbose)
 {
 	fprintf(stderr, "Usage: %s [-?c]\n", progname);
 	if (verbose)

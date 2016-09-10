@@ -18,7 +18,7 @@ function _systemctl {
   0)  _COMPLETE="$ACT"
   ;;
   1)  typeset -i i=0
-      typeset out
+      typeset out a
       if [[ $1 == "" ]]; then
         _COMPLETE="$ACT"
       else

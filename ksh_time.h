@@ -20,6 +20,6 @@ extern time_t time(time_t *);
 #endif
 
 #ifndef CLK_TCK
-# define CLK_TCK 60			/* 60HZ */
+# define CLK_TCK 60	/* 60HZ */
 #endif
 #endif /* KSH_TIME_H */

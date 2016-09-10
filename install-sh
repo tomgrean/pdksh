@@ -115,5 +115,4 @@ if [ x"$chmodcmd" != x ]; then $doit $chmodcmd $dsttmp; fi
 $doit $rmcmd $dst
 $doit $mvcmd $dsttmp $dst
 
-
 exit 0
