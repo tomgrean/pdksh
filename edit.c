@@ -1069,7 +1069,7 @@ x_parameter_glob(const char *buf, const char *str, int slen, char ***wordsp, int
 	return ret;
 }
 
-#endif
+#endif /* KSH_COMPLETE */
 int
 x_cf_glob(int flags, const char *buf, int buflen, int pos, int *startp,
     int *endp, char ***wordsp, int *is_commandp)
@@ -1088,7 +1088,7 @@ x_cf_glob(int flags, const char *buf, int buflen, int pos, int *startp,
 	if (!is_command) {
 		nwords = x_parameter_glob(buf, buf + *startp, len, &words, &is_command);
 	}
-#endif
+#endif /* KSH_COMPLETE */
 
 	if (!nwords) {
 		nwords = (is_command ? x_command_glob : x_file_glob)(flags,

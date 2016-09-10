@@ -1363,6 +1363,7 @@ c_getopts(char **wp)
 
 	return optc < 0 ? 1 : ret;
 }
+#ifdef KSH_COMPLETE
 int
 c_complete(char **wp)
 {
@@ -1382,6 +1383,7 @@ c_complete(char **wp)
 	}
 	return 0;
 }
+#endif /* KSH_COMPLETE */
 #ifdef EMACS
 int
 c_bind(char **wp)
