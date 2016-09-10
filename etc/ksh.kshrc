@@ -33,138 +33,50 @@ case "$-" in
 	# we may have su'ed so reset these
 	# NOTE: SCO-UNIX doesn't have whoami,
 	#	install whoami.sh
-	USER=`whoami 2>/dev/null`
-        USER=${USER:-`id | sed 's/^[^(]*(\([^)]*\)).*/\1/'`}
 	case $UID in
-	0) PS1S='# ';;
+	0) PS1='# ';;
 	esac
-        PS1S=${PS1S:-'$ '}
-	HOSTNAME=${HOSTNAME:-`uname -n`}
-	HOST=${HOSTNAME%%.*}
+        PS1=$USER@'$PWD$ '
 
-	PROMPT="$USER:!$PS1S"
-	#PROMPT="<$USER@$HOST:!>$PS1S"
-	PPROMPT='$USER:$PWD:!'"$PS1S"
-	#PPROMPT='<$USER@$HOST:$PWD:!>'"$PS1S"
-	PS1=$PPROMPT
-	# $TTY is the tty we logged in on,
-	# $tty is that which we are in now (might by pty)
-	tty=`tty`
-	tty=`basename $tty`
-        TTY=${TTY:-$tty}
-
-	alias ls='ls -CF'
-	alias h='fc -l | more'
-	_cd() { cd $@; }
 	# the PD ksh is not 100% compatible
 	case "$KSH_VERSION" in
 	*PD*)	# PD ksh
-		case "$TERM" in
-		pc3|xterm*)
-			set -o vi
-			complete 'sudo=C'
-			complete 'git=S:add,:status,:commit,clone,:diff,:log'
-			complete 'svn=S:add,:status,:commit,checkout,@--diff-cmd,:diff,:log'
-			function _systemctl {
-			  typeset ACT='enable disable status start stop'
-			  case $# in
-			  0)  _COMPLETE="$ACT"
-			  ;;
-			  1)  typeset -i i=0
-			      typeset out a
-			      if [[ $1 == "" ]]; then
-			        _COMPLETE="$ACT"
-			      else
-			        for a in $ACT; do
-			          if [[ ${a#$1} != $a ]]; then
-			            out[$i]=$a
-			            ((i++))
-			          fi
-			        done
-			        _COMPLETE=${out[*]}
-			      fi
-			  ;;
-			  2)  _COMPLETE=$(cd /lib/systemd/system/;echo $2*)
-			  ;;
-			  esac
-			}
-			complete 'systemctl=F_systemctl'
-			;;
-		esac
+		set -o vi
+		complete 'sudo=C'
+		complete 'git=S:add,:status,:commit,clone,:diff,:log'
+		complete 'svn=S:add,:status,:commit,checkout,@--diff-cmd,:diff,:log'
+		function _systemctl {
+		  typeset ACT='enable disable status start stop'
+		  case $# in
+		  0)  _COMPLETE="$ACT"
+		  ;;
+		  1)  typeset -i i=0
+		      typeset out a
+		      if [[ $1 == "" ]]; then
+		        _COMPLETE="$ACT"
+		      else
+		        for a in $ACT; do
+		          if [[ ${a#$1} != $a ]]; then
+		            out[$i]=$a
+		            ((i++))
+		          fi
+		        done
+		        _COMPLETE=${out[*]}
+		      fi
+		  ;;
+		  2)  _COMPLETE=$(cd /lib/systemd/system/;echo $2*)
+		  ;;
+		  esac
+		}
+		complete 'systemctl=F_systemctl'
 		;;
 	*)	# real ksh ?
 		[ -r $HOME/.functions ] && . $HOME/.functions
-		set -o trackall
 		;;
 	esac
-	case "$TERM" in
-	sun*)
-		# these are not as neat as their csh equivalents
-		if [ "$tty" != console ]; then
-			# ilabel
-			ILS='\033]L'; ILE='\033\\'
-			# window title bar
-			WLS='\033]l'; WLE='\033\\'
-		fi
-		;;
-	xterm*)
-		ILS='\033]1;'; ILE='\007'
-		WLS='\033]2;'; WLE='\007'
-                parent="`ps -ax 2>/dev/null | grep $PPID | grep -v grep`"
-                case "$parent" in
-		*telnet*)
-                  export TERM=xterms;;
-		esac
-		;;
-	*)	;;
-	esac
-	# do we want window decorations?
-	if [ "$ILS" ]; then
-		ilabel () { print -n "${ILS}$*${ILE}"; }
-		label () { print -n "${WLS}$*${WLE}"; }
-
-		alias stripe='label "$USER@$HOST ($tty) - $PWD"'
-		alias istripe='ilabel "$USER@$HOST ($tty)"'
-
-		wftp () { ilabel "ftp $*"; "ftp" $*; eval istripe; }
-		wcd () { _cd $*; eval stripe; }
-		wtelnet ()
-		{
-			"telnet" "$@"
-			eval istripe
-			eval stripe
-		}
-		wrlogin ()
-		{
-			"rlogin" "$@"
-			eval istripe
-			eval stripe
-		}
-		wsu ()
-		{
-			"su" "$@"
-			eval istripe
-			eval stripe
-		}
-		alias su=wsu
-		alias cd=wcd
-		alias ftp=wftp
-		alias telnet=wtelnet
-		alias rlogin=wrlogin
-		eval stripe
-		eval istripe
-		PS1=$PROMPT
-	fi
-	alias cls=clear
-	alias logout=exit
-	alias bye=exit
-	alias p='ps -l'
-	alias j=jobs
-	alias o='fg %-'
 ;;
 *)	# non-interactive
 ;;
 esac
 # commands for both interactive and non-interactive shells
-
 
