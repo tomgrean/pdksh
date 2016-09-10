@@ -348,7 +348,7 @@ main(int argc, char *argv[])
 	 * user will know why things broke.
 	 */
 	if (!current_wd[0] && Flag(FTALKING))
-		warningf(FALSE, "Cannot determine current working directory");
+		warningf(false, "Cannot determine current working directory");
 
 	if (Flag(FLOGIN)) {
 		include(KSH_SYSTEM_PROFILE, 0, (char **) 0, 1);
@@ -405,7 +405,7 @@ main(int argc, char *argv[])
 	} else
 		Flag(FTRACKALL) = 1;	/* set after ENV */
 
-	shell(s, TRUE);	/* doesn't return */
+	shell(s, true);	/* doesn't return */
 	return 0;
 }
 
@@ -470,7 +470,7 @@ include(const char *name, int argc, char **argv, int intr_ok)
 	s = pushs(SFILE, ATEMP);
 	s->u.shf = shf;
 	s->file = str_save(name, ATEMP);
-	i = shell(s, FALSE);
+	i = shell(s, false);
 	source = sold;
 	shf_close(s->u.shf);
 	quitenv();
@@ -488,7 +488,7 @@ command(const char *comm)
 
 	s = pushs(SSTRING, ATEMP);
 	s->start = s->str = comm;
-	return shell(s, FALSE);
+	return shell(s, false);
 }
 
 /*

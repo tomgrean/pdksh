@@ -11,6 +11,7 @@
 /* Start of common headers */
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <sys/types.h>
 #include <setjmp.h>
 #ifdef HAVE_STDDEF_H
@@ -646,6 +647,7 @@ extern struct coproc coproc;
 
 /* Used in jobs.c and by coprocess stuff in exec.c */
 #ifdef JOB_SIGS
+#include <signal.h>
 extern sigset_t		sm_default, sm_sigchld;
 #endif /* JOB_SIGS */
 

@@ -256,7 +256,7 @@ void 	newblock(void);
 void 	popblock(void);
 void	initvar(void);
 struct tbl *	global(const char *n);
-struct tbl *	local(const char *n, bool_t copy);
+struct tbl *	local(const char *n, bool copy);
 char *	str_val(struct tbl *vp);
 long 	intval(struct tbl *vp);
 int 	setstr(struct tbl *vq, const char *s, int error_ok);
