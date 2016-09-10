@@ -296,10 +296,6 @@ extern int dup2(int, int);
 #define ksh_strchr_dirsep(p)   strchr(p, DIRSEP)
 #define ksh_strrchr_dirsep(p)  strrchr(p, DIRSEP)
 
-typedef int bool_t;
-#define	FALSE	0
-#define	TRUE	1
-
 #define	NELEM(a) (sizeof(a) / sizeof((a)[0]))
 #define	sizeofN(type, n) (sizeof(type) * (n))
 #define	BIT(i)	(1<<(i))	/* define bit in flag */
