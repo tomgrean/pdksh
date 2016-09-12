@@ -187,7 +187,7 @@ runtraps(int flag)
 #ifdef KSH
 	if (ksh_tmout_state == TMOUT_LEAVING) {
 		ksh_tmout_state = TMOUT_EXECUTING;
-		warningf(FALSE, "timed out waiting for input");
+		warningf(false, "timed out waiting for input");
 		unwind(LEXIT);
 	} else
 		/* XXX: this means the alarm will have no effect if a trap

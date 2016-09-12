@@ -862,7 +862,7 @@ comsub(Expand *xp, char *cp)
 		shf = shf_fdopen(pv[0], SHF_RD, (struct shf *) 0);
 		ofd1 = savefd(1, 0);	/* fd 1 may be closed... */
 		if (pv[1] != 1) {
-			ksh_dup2(pv[1], 1, FALSE);
+			ksh_dup2(pv[1], 1, false);
 			close(pv[1]);
 		}
 
@@ -890,7 +890,7 @@ trimsub(char *str, char *pat, int how)
 	  case '#':		/* shortest at begining */
 		for (p = str; p <= end; p++) {
 			c = *p; *p = '\0';
-			if (gmatch(str, pat, FALSE)) {
+			if (gmatch(str, pat, false)) {
 				*p = c;
 				return p;
 			}
@@ -900,7 +900,7 @@ trimsub(char *str, char *pat, int how)
 	  case '#'|0x80:	/* longest match at begining */
 		for (p = end; p >= str; p--) {
 			c = *p; *p = '\0';
-			if (gmatch(str, pat, FALSE)) {
+			if (gmatch(str, pat, false)) {
 				*p = c;
 				return p;
 			}
@@ -909,13 +909,13 @@ trimsub(char *str, char *pat, int how)
 		break;
 	  case '%':		/* shortest match at end */
 		for (p = end; p >= str; p--) {
-			if (gmatch(p, pat, FALSE))
+			if (gmatch(p, pat, false))
 				return str_nsave(str, p - str, ATEMP);
 		}
 		break;
 	  case '%'|0x80:	/* longest match at end */
 		for (p = str; p <= end; p++) {
-			if (gmatch(p, pat, FALSE))
+			if (gmatch(p, pat, false))
 				return str_nsave(str, p - str, ATEMP);
 		}
 		break;
@@ -1082,7 +1082,7 @@ globit(XString *xs,	/* dest string */
 			    (name[1] == 0 || (name[1] == '.' && name[2] == 0)))
 				continue; /* always ignore . and .. */
 			if ((*name == '.' && *sp != '.')
-			    || !gmatch(name, sp, TRUE))
+			    || !gmatch(name, sp, true))
 				continue;
 
 			len = NLENGTH(d) + 1;

@@ -48,9 +48,7 @@ char	*progname =	"check-sigs";
 int	caught_sigs;
 
 int
-main(argc, argv)
-	int argc;
-	char **argv;
+main(int argc, char **argv)
 {
 	extern int	optind;
 	extern char	*optarg;
@@ -156,8 +154,7 @@ main(argc, argv)
 }
 
 int
-usage(verbose)
-	int verbose;
+usage(int verbose)
 {
 	fprintf(stderr, "Usage: %s [-?aw] [-o file]\n", progname);
 	if (verbose)
@@ -184,8 +181,7 @@ sig_catcher(sig)
 
 
 char *
-signal_name(sig)
-	int sig;
+signal_name(int sig)
 {
 	static char buf[1024];
 
@@ -210,8 +206,7 @@ signal_name(sig)
 
 #ifndef HAVE_STRERROR
 char *
-strerror(err)
-	int err;
+strerror(int err)
 {
 	static char	buf[64];
 # ifdef HAVE_SYS_ERRLIST

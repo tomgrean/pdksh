@@ -18,8 +18,7 @@
 #ifdef BSD_PGRP
 # include <sys/ioctl.h>
 int
-tcgetpgrp(fd)
-	int fd;
+tcgetpgrp(int fd)
 {
 	int r, grp;
 
@@ -37,9 +36,7 @@ int	usage();
 char	*progname =	"check-pgrp";
 
 int
-main(argc, argv)
-    int argc;
-    char **argv;
+main(int argc, char **argv)
 {
     extern int	optind;
     extern char	*optarg;
@@ -87,14 +84,11 @@ main(argc, argv)
 }
 
 int
-usage(verbose)
-    int verbose;
+usage(int verbose)
 {
     fprintf(stderr, "Usage: %s [-?] [-u fd]\n", progname);
     if (verbose)
-	fprintf(stderr, "\
-    -u fd	use fd as tty fd (default is 0)\n\
-");
+	fprintf(stderr, "    -u fd	use fd as tty fd (default is 0)\n");
 
     exit(1);
     return 0;

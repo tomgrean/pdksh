@@ -11,6 +11,7 @@
 /* Start of common headers */
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <sys/types.h>
 #include <setjmp.h>
 #ifdef HAVE_STDDEF_H
@@ -295,10 +296,6 @@ extern int dup2(int, int);
 #define FILENCMP(s1, s2, n) strncmp(s1, s2, n)
 #define ksh_strchr_dirsep(p)   strchr(p, DIRSEP)
 #define ksh_strrchr_dirsep(p)  strrchr(p, DIRSEP)
-
-typedef int bool_t;
-#define	FALSE	0
-#define	TRUE	1
 
 #define	NELEM(a) (sizeof(a) / sizeof((a)[0]))
 #define	sizeofN(type, n) (sizeof(type) * (n))
@@ -650,6 +647,7 @@ extern struct coproc coproc;
 
 /* Used in jobs.c and by coprocess stuff in exec.c */
 #ifdef JOB_SIGS
+#include <signal.h>
 extern sigset_t		sm_default, sm_sigchld;
 #endif /* JOB_SIGS */
 

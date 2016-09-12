@@ -256,7 +256,7 @@ void 	newblock(void);
 void 	popblock(void);
 void	initvar(void);
 struct tbl *	global(const char *n);
-struct tbl *	local(const char *n, bool_t copy);
+struct tbl *	local(const char *n, bool copy);
 char *	str_val(struct tbl *vp);
 long 	intval(struct tbl *vp);
 int 	setstr(struct tbl *vq, const char *s, int error_ok);
@@ -275,8 +275,8 @@ int	array_ref_len(const char *cp);
 char *	arrayname(const char *str);
 void    set_array(const char *var, int reset, char **vals);
 /* version.c */
-/* vi.c: see edit.h */
 #ifdef KSH_COMPLETE
+/* vi.c: see edit.h */
 void	init_complete(void);
 #endif
 

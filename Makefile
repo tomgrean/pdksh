@@ -112,26 +112,26 @@ $(SHELL_PROG).1: $(srcdir)/ksh.Man
 info:
 	@echo "No info (yet)"
 
-dvi:
+#dvi:
+#
+#$(srcdir)/configure: configure.in aclocal.m4
+#	cd $(srcdir) && autoconf
+#
+#$(srcdir)/config.h.in: stamp-h.in
+#$(srcdir)/stamp-h.in: configure.in aclocal.m4 acconfig.h
+#	-cd $(srcdir) && autoheader
+#	date > $(srcdir)/stamp-h.in
+#
+#config.h: stamp-h
+#stamp-h: config.h.in config.status
+#	CONFIG_FILES="" CONFIG_HEADERS=config.h ./config.status
+#	date > stamp-h
 
-$(srcdir)/configure: configure.in aclocal.m4
-	cd $(srcdir) && autoconf
+#Makefile: Makefile.in config.status
+#	CONFIG_FILES=Makefile CONFIG_HEADERS= ./config.status
 
-$(srcdir)/config.h.in: stamp-h.in
-$(srcdir)/stamp-h.in: configure.in aclocal.m4 acconfig.h
-	-cd $(srcdir) && autoheader
-	date > $(srcdir)/stamp-h.in
-
-config.h: stamp-h
-stamp-h: config.h.in config.status
-	CONFIG_FILES="" CONFIG_HEADERS=config.h ./config.status
-	date > stamp-h
-
-Makefile: Makefile.in config.status
-	CONFIG_FILES=Makefile CONFIG_HEADERS= ./config.status
-
-config.status: configure
-	LDSTATIC="$(LDSTATIC)" ./config.status --recheck
+#config.status: configure
+#	LDSTATIC="$(LDSTATIC)" ./config.status --recheck
 
 # two steps to prevent the creation of a bogus siglist.out
 siglist.out: config.h sh.h siglist.in siglist.sh

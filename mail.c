@@ -37,10 +37,10 @@ static void     mprintit(mbox_t *mbp);
 void
 mcheck(void)
 {
-	 mbox_t	*mbp;
-	time_t		 now;
+	mbox_t	*mbp;
+	time_t		now;
 	struct tbl	*vp;
-	struct stat	 stbuf;
+	struct stat	stbuf;
 
 	now = time((time_t *) 0);
 	if (mlastchkd == 0)
@@ -105,8 +105,8 @@ mbset(char *p)
 void
 mpset(char *mptoparse)
 {
-	 mbox_t	*mbp;
-	 char	*mpath, *mmsg, *mval;
+	mbox_t	*mbp;
+	char	*mpath, *mmsg, *mval;
 	char *p;
 
 	munset( mplist );
@@ -144,7 +144,7 @@ mpset(char *mptoparse)
 static void
 munset(mbox_t *mlist)
 {
-	 mbox_t	*mbp;
+	mbox_t	*mbp;
 
 	while (mlist != NULL) {
 		mbp = mlist;
@@ -159,7 +159,7 @@ static mbox_t *
 mballoc(char *p, char *m)
 {
 	struct stat	stbuf;
-	 mbox_t	*mbp;
+	mbox_t	*mbp;
 
 	mbp = (mbox_t *)alloc(sizeof(mbox_t), APERM);
 	mbp->mb_next = NULL;
@@ -178,7 +178,7 @@ mprintit(mbox_t *mbp)
 	struct tbl	*vp;
 
 	/* Ignore setstr errors here (arbitrary) */
-	setstr((vp = local("_", FALSE)), mbp->mb_path, KSH_RETURN_ERROR);
+	setstr((vp = local("_", false)), mbp->mb_path, KSH_RETURN_ERROR);
 
 	shellf("%s\n", substitute(mbp->mb_msg ? mbp->mb_msg : MBMESSAGE, 0));
 

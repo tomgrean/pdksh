@@ -6,7 +6,6 @@
 #include "ksh_stat.h"
 #include "ksh_dir.h"
 
-
 #ifndef HAVE_MEMSET
 void *
 memset(void *d, int c, size_t n)
