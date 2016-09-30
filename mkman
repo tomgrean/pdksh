@@ -7,7 +7,7 @@ if [ X"$1" = X-v ] ; then
     shift
 fi
 if [ $# != 2 ] ; then
-    echo "Usage: $0 [-v] which-shell kash.Man-file" 1>&2
+    echo "Usage: $0 [-v] which-shell pdksh.Man-file" 1>&2
     exit 1;
 fi
 shell=$1
@@ -15,9 +15,9 @@ man=$2
 
 case $shell in
  sh) which=0;;
- kash) which=1;;
+ pdksh) which=1;;
  *)
-    echo "$0: bad shell option (must be sh or kash)" 1>&2
+    echo "$0: bad shell option (must be sh or pdksh)" 1>&2
     exit 1
     ;;
 esac
@@ -30,13 +30,13 @@ fi
 #
 # Now generate the appropriate man page...
 #
-[ $verbose = yes ] && echo "$0: Generating $which man page (0=sh,1=kash)..." 1>&2
+[ $verbose = yes ] && echo "$0: Generating $which man page (0=sh,1=pdksh)..." 1>&2
 
-awk 'BEGIN { kash = '$which'; pr = 1 }
-    /^\.sh\(/ { pr = kash - 1; next }
+awk 'BEGIN { pdksh = '$which'; pr = 1 }
+    /^\.sh\(/ { pr = pdksh - 1; next }
     /^\.sh\)/ { pr = 1; next }
-    /^\.kash\(/ { pr = kash; next }
-    /^\.kash\)/ { pr = 1; next }
+    /^\.pdksh\(/ { pr = pdksh; next }
+    /^\.pdksh\)/ { pr = 1; next }
     { if (pr) print $0 } ' < $man
 
 [ $verbose = yes ] && echo "$0: All done" 1>&2

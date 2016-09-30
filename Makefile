@@ -22,7 +22,7 @@ CFLAGS = -Wall -g -O1
 LDSTATIC = 
 LDFLAGS = 
 
-SHELL_PROG = kash
+SHELL_PROG = pdksh
 
 prefix = /usr/local
 exec_prefix = ${prefix}
@@ -163,7 +163,7 @@ tags: $(SRCS) $(HDRS)
 	cd $(srcdir) && ctags -wt $(SRCS) $(HDRS)
 
 clean:
-	rm -f kash$(exe_suffix) sh$(exe_suffix) kash.1 sh.1 $(OBJS) siglist.out \
+	rm -f pdksh$(exe_suffix) sh$(exe_suffix) pdksh.1 sh.1 $(OBJS) siglist.out \
 	      emacs.out core a.out mon.out gmon.out \
 	      version.c.bak Makefile.bak Makefile.tmp check-fd$(exe_suffix) \
 	      check-pgrp$(exe_suffix) check-sigs$(exe_suffix)

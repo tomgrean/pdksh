@@ -5,5 +5,5 @@ category: pdksh
 stdin:
 	echo $KSH_VERSION
 expected-stdout:
-	@(#)PD KSH v5.2.14 16/08/15
+	@(#)PD KSH v5.2.14 16/09/30.1
 ---

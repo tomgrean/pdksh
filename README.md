@@ -1,5 +1,5 @@
 # kash
-My shell version from debian patched pdksh.
+pdksh: public domain korn shell with command auto completion.
 ---
 My kash is mainly focusing on interactive shells.
 I use vi editing mode, so I will try to fix any bug found in it. I added supports for arrow keys and Home, End, PgUp, PgDn, so the cursor can be moved easier.

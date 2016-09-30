@@ -19,10 +19,7 @@
  * Special versions of alloc routines if doing mem_debug
  */
 Area *
-_chmem_ainit(ap, file, line)
-	Area *ap;
-	const char *file;
-	int line;
+_chmem_ainit(Area *ap, const char *file, int line)
 {
 	ap->freelist = (struct Block *) _chmem_newpool("ainit", (char *) 0, -1,
 						file, line);
@@ -33,10 +30,7 @@ _chmem_ainit(ap, file, line)
 
 /* free all object in Area */
 void
-_chmem_afreeall(ap, file, line)
-	Area *ap;
-	const char *file;
-	int line;
+_chmem_afreeall(Area *ap, const char *file, int line)
 {
 	_chmem_delpool((Chmem_poolp) ap->freelist, 0, file, line);
 	/* Kind of ugly, but it works */
@@ -45,23 +39,14 @@ _chmem_afreeall(ap, file, line)
 
 /* allocate object from Area */
 void *
-_chmem_alloc(size, ap, file, line)
-	size_t size;
-	Area *ap;
-	const char *file;
-	int line;
+_chmem_alloc(size_t size, Area *ap, const char *file, int line)
 {
 	return _chmem_mallocp((Chmem_poolp) ap->freelist, size, file, line);
 }
 
 /* change size of object -- like realloc */
 void *
-_chmem_aresize(ptr, size, ap, file, line)
-	void *ptr;
-	size_t size;
-	Area *ap;
-	const char *file;
-	int line;
+_chmem_aresize(void *ptr, size_t size, Area *ap, const char *file, int line)
 {
 	if (!ptr)
 		/* Done as realloc(0, size) is not portable */
@@ -73,11 +58,7 @@ _chmem_aresize(ptr, size, ap, file, line)
 }
 
 void
-_chmem_afree(ptr, ap, file, line)
-	void *ptr;
-	Area *ap;
-	const char *file;
-	int line;
+_chmem_afree(void *ptr, Area *ap, const char *file, int line)
 {
 	return _chmem_freep((Chmem_poolp) ap->freelist, ptr, file, line);
 }
@@ -136,8 +117,7 @@ static void *asplit(Area *ap, Block *bp, Cell *fp, Cell *fpp, int cells);
 
 /* create empty Area */
 Area *
-ainit(ap)
-	 Area *ap;
+ainit(Area *ap)
 {
 	ap->freelist = &aempty;
 	ACHECK(ap);
@@ -146,11 +126,10 @@ ainit(ap)
 
 /* free all object in Area */
 void
-afreeall(ap)
-	 Area *ap;
+afreeall(Area *ap)
 {
-	 Block *bp;
-	 Block *tmp;
+	Block *bp;
+	Block *tmp;
 
 	ACHECK(ap);
 	bp = ap->freelist;
@@ -167,9 +146,7 @@ afreeall(ap)
 
 /* allocate object from Area */
 void *
-alloc(size, ap)
-	size_t size;
-	 Area *ap;
+alloc(size_t size, Area *ap)
 {
 	int cells, acells;
 	Block *bp = 0;
@@ -235,12 +212,7 @@ alloc(size, ap)
  * objects.  Returns the `allocated' object.
  */
 static void *
-asplit(ap, bp, fp, fpp, cells)
-	Area *ap;
-	Block *bp;
-	Cell *fp;
-	Cell *fpp;
-	int cells;
+asplit(Area *ap, Block *bp, Cell *fp, Cell *fpp, int cells)
 {
 	Cell *dp = fp;	/* allocated object */
 	int split = (fp-1)->size - cells;
@@ -269,10 +241,7 @@ asplit(ap, bp, fp, fpp, cells)
 
 /* change size of object -- like realloc */
 void *
-aresize(ptr, size, ap)
-	 void *ptr;
-	size_t size;
-	Area *ap;
+aresize(void *ptr, size_t size, Area *ap)
 {
 	int cells;
 	Cell *dp = (Cell*) ptr;
@@ -407,9 +376,7 @@ aresize(ptr, size, ap)
 }
 
 void
-afree(ptr, ap)
-	void *ptr;
-	 Area *ap;
+afree(void *ptr, Area *ap)
 {
 	 Block *bp;
 	 Cell *fp, *fpp;
@@ -469,9 +436,7 @@ afree(ptr, ap)
 }
 
 static void
-ablockfree(bp, ap)
-	Block *bp;
-	Area *ap;
+ablockfree(Block *bp, Area *ap)
 {
 	/* NOTE: If this code changes, similar changes may be
 	 * needed in alloc() (where realloc fails).
@@ -490,8 +455,7 @@ ablockfree(bp, ap)
 
 # if DEBUG_ALLOC
 void
-acheck(ap)
-	Area *ap;
+acheck(Area *ap)
 {
 	Block *bp, *bpp;
 	Cell *dp, *dptmp, *fp;
@@ -587,10 +551,7 @@ acheck(ap)
 }
 
 void
-aprint(ap, ptr, size)
-	 Area *ap;
-	void *ptr;
-	size_t size;
+aprint(Area *ap, void *ptr, size_t size)
 {
 	Block *bp;
 

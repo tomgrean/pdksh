@@ -10,9 +10,6 @@
 #include "tty.h"
 #include "edit.h"
 
-#ifdef DEBIAN
-#include <sys/ioctl.h>
-#endif /* DEBIAN */
 #include <ctype.h>
 #include "ksh_stat.h"
 

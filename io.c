@@ -415,7 +415,6 @@ coproc_cleanup(int reuse)
 /*
  * temporary files
  */
-
 struct temp *
 maketemp(Area *ap, Temp_type type, struct temp **tlist)
 {
