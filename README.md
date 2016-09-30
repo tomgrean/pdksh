@@ -8,6 +8,8 @@ I also added programmed tab-completion, just like bash. It's kind of complicated
 you may first need to edit your $HOME/.kshrc to setup your tab-completion configurations. some lines of mine looks like:
 
 <pre>
+[[ "$KSH_VERSION" == *PD* ]] || return
+
 complete 'sudo=C'
 complete 'git=S:add,:status,:commit,clone,:diff,:log'
 complete 'svn=S:add,:status,:commit,checkout,@--diff-cmd,:diff,:log'

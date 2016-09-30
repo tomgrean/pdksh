@@ -586,8 +586,14 @@ histsave(int lno, /* ignored (compatibility with COMPLEX_HISTORY) */
 const char *cmd,
 int dowrite)/* ignored (compatibility with COMPLEX_HISTORY) */
 {
-	 char **hp = histptr;
+	char **hp = histptr;
 	char *cp;
+	size_t len;
+
+	len = strlen(cmd);
+	if (memcmp(cmd, *hp, len - 1) == 0) {
+		return;
+	}
 
 	if (++hp >= history + histsize) { /* remove oldest command */
 		afree((void*)history[0], APERM);
@@ -597,7 +603,7 @@ int dowrite)/* ignored (compatibility with COMPLEX_HISTORY) */
 	}
 	*hp = str_save(cmd, APERM);
 	/* trash trailing newline but allow imbedded newlines */
-	cp = *hp + strlen(*hp);
+	cp = *hp + len;
 	if (cp > *hp && cp[-1] == '\n')
 		cp[-1] = '\0';
 	histptr = hp;
