@@ -588,11 +588,26 @@ int dowrite)/* ignored (compatibility with COMPLEX_HISTORY) */
 {
 	char **hp = histptr;
 	char *cp;
-	size_t len;
+	int len;
 
-	len = strlen(cmd);
-	if (memcmp(cmd, *hp, len - 1) == 0) {
-		return;
+	{
+		const char *np = cmd, *op = *hp;
+		int flag = -1;
+		for (; *np; ++np, ++op) {
+			if (flag) {
+				if (*np != *op) {
+					if (*op) {
+						flag = 0;
+					} else {
+						flag = np - cmd;
+					}
+				}
+			}
+		}
+		len = np - cmd;
+		if (flag < 0 || len - flag < 2) {
+				return;
+		}
 	}
 
 	if (++hp >= history + histsize) { /* remove oldest command */
