@@ -1,7 +1,7 @@
-# kash
+# pdksh enhanced
 pdksh: public domain korn shell with command auto completion.
 ---
-My kash project is mainly focusing on interactive shells.
+My pdksh project is mainly focusing on interactive shells.
 I use vi editing mode, so I will try to fix any bug found in it. I added supports for arrow keys and Home, End, PgUp, PgDn, so the cursor can be moved easier.
 
 I also added programmed tab-completion, just like bash. It's kind of complicated, though, and there still may be bugs. OK, let me introduce the programmed tab-completion to you.
