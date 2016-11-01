@@ -23,27 +23,38 @@ complete 'git=S:add,:status,:commit,clone,:diff,:log'
 complete 'svn=S:add,:status,:commit,checkout,@--diff-cmd,:diff,:log'
 complete 'systemctl=F_systemctl'
 function _systemctl {
-  typeset ACT='enable disable status start stop'
-  case $# in
-  0)  _COMPLETE="$ACT"
-  ;;
-  1)  typeset -i i=0
-      typeset out a
-      if [[ $1 == "" ]]; then
-        _COMPLETE="$ACT"
-      else
-        for a in $ACT; do
-          if [[ ${a#$1} != $a ]]; then
-            out[$i]=$a
-            ((i++))
-          fi
-        done
-        _COMPLETE=${out[*]}
-      fi
-  ;;
-  2)  _COMPLETE=$(cd /lib/systemd/system/;echo $2*)
-  ;;
-  esac
+	typeset ACT="enable disable start stop restart status reload"
+	case $# in
+	0)
+		_COMPLETE=$ACT
+		;;
+	1)
+		if [[ -z "$1" ]]; then
+			_COMPLETE=$ACT
+		else
+			typeset -i i=0
+			typeset outs
+			typeset a
+			for a in $ACT; do
+				if [[ ${a#$1} != $a ]]; then
+					outs[$((i++))]=$a
+				fi
+			done
+			_COMPLETE="${outs[@]}"
+		fi
+		;;
+	*)
+		shift $(($# - 1))
+		_COMPLETE=$(cd /lib/systemd/system;
+		if [ -z "$1" ];then
+			echo *
+		elif echo $1* |grep -F '*' > /dev/null 2>&1;then
+			:
+		else
+			echo $1*
+		fi)
+		;;
+	esac
 }
 
 </pre>
