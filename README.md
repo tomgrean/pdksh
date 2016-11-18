@@ -8,7 +8,7 @@ I also added programmed tab-completion, just like bash. It's kind of complicated
 
 First of all, you may need to edit your $HOME/.kshrc to setup your tab-completion configuration. Some lines of mine look like:
 
-```bash
+```ksh
 # interactive shell only
 [[ "$-" == *i* ]] || return
 PS1='$USER@${PWD}$ '
