@@ -45,8 +45,9 @@ static const char *const initcoms [] = {
 	  "hash=alias -t",	/* not "alias -t --": hash -r needs to work */
 	  "type=whence -v",
 #ifdef JOBS
-	  "stop=kill -STOP",
+/*	  "stop=kill -STOP",
 	  "suspend=kill -STOP $$",
+*/
 #endif
 #ifdef KSH
 	  "autoload=typeset -fu",
@@ -55,14 +56,16 @@ static const char *const initcoms [] = {
 	  "history=fc -l",
 # endif /* HISTORY */
 	  "integer=typeset -i",
-	  "nohup=nohup ",
+/*	  "nohup=nohup ",
+*/
 	  "local=typeset",
 	  "r=fc -e -",
 #endif /* KSH */
 #ifdef KSH
 	 /* Aliases that are builtin commands in at&t */
-	  "login=exec login",
+/*	  "login=exec login",
 	  "newgrp=exec newgrp",
+*/
 #endif /* KSH */
 	  NULL,
 	/* this is what at&t ksh seems to track, with the addition of emacs */

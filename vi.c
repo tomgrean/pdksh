@@ -184,84 +184,101 @@ static struct macro_state macro;
 enum expand_mode { NONE, EXPAND, COMPLETE, PRINT };
 static enum expand_mode expanded = NONE;/* last input was expanded */
 
-enum bind_action {
-	BIND_KEY_UP = 1,
-	BIND_KEY_DOWN,
-	BIND_KEY_RIGHT,
-	BIND_KEY_LEFT,
-	BIND_KEY_HOME,
-	BIND_KEY_END,
-	BIND_KEY_PGUP,
-	BIND_KEY_PGDN,
-	BIND_KEY_DEL,
-	BIND_KEY_INS,
-};
-struct bind_key {
-	int action;
-	char seq[4];
-};
-static struct bind_key bind_keys[] = {
-	{BIND_KEY_UP, { Ctrl('['), '[', 'A', '\0' }},
-	{BIND_KEY_DOWN, { Ctrl('['), '[', 'B', '\0' }},
-	{BIND_KEY_RIGHT, { Ctrl('['), '[', 'C', '\0' }},
-	{BIND_KEY_LEFT, { Ctrl('['), '[', 'D', '\0' }},
-	{BIND_KEY_HOME, { Ctrl('['), 'O', 'H', '\0' }},
-	{BIND_KEY_END, { Ctrl('['), 'O', 'F', '\0' }},
-	{BIND_KEY_PGUP, { Ctrl('['), '[', '5', '~' }},
-	{BIND_KEY_PGDN, { Ctrl('['), '[', '6', '~' }},
-	{BIND_KEY_DEL, { Ctrl('['), '[', '3', '~' }},
-	{BIND_KEY_INS, { Ctrl('['), '[', '2', '~' }},
-	{0, ""}
-};
 
 static int
-bind_action(int action)
+bind_action_up()
 {
-	switch (action) {
-	case BIND_KEY_UP:
-	case BIND_KEY_PGUP:
-		vi_cmd(1, "k");
-		if (insert)
-			es->cursor = domove(1, "$", 1);
-		break;
-	case BIND_KEY_DOWN:
-	case BIND_KEY_PGDN:
-		vi_cmd(1, "j");
-		if (insert)
-			es->cursor = domove(1, "$", 1);
-		break;
-	case BIND_KEY_RIGHT:
-		es->cursor = domove(1, "l", 1);
-		if (!insert && es->cursor == es->linelen) {
-			es->cursor--;
-		}
-		break;
-	case BIND_KEY_LEFT:
-		es->cursor = domove(1, "h", 1);
-		break;
-	case BIND_KEY_HOME:
-		es->cursor = domove(1, "0", 1);
-		break;
-	case BIND_KEY_END:
+	vi_cmd(1, "k");
+	if (insert)
 		es->cursor = domove(1, "$", 1);
-		if (!insert) {
-			es->cursor--;
-		}
-		break;
-	case BIND_KEY_DEL:
-		vi_cmd(1, "x");
-		break;
-	case BIND_KEY_INS:
-		break;
+	return 0;
+}
+static int
+bind_action_down()
+{
+	vi_cmd(1, "j");
+	if (insert)
+		es->cursor = domove(1, "$", 1);
+	return 0;
+}
+static int
+bind_action_right()
+{
+	es->cursor = domove(1, "l", 1);
+	if (!insert && es->cursor == es->linelen) {
+		es->cursor--;
 	}
+	return 0;
+}
+static int
+bind_action_left()
+{
+	es->cursor = domove(1, "h", 1);
+	return 0;
+}
+static int
+bind_action_home()
+{
+	es->cursor = domove(1, "0", 1);
+	return 0;
+}
+static int
+bind_action_end()
+{
+	es->cursor = domove(1, "$", 1);
+	if (!insert) {
+		es->cursor--;
+	}
+	return 0;
+}
+static int
+bind_action_del()
+{
+	vi_cmd(1, "x");
+	return 0;
+}
+static int
+bind_action_ins()
+{
+	return 0;
+}
+static int
+bind_action_refresh()
+{
 	refresh(0);
 	x_flush();
 	return 0;
 }
+#define SET_BIND_ACTION(bn_name) {#bn_name,bind_action_ ## bn_name}
+static struct {
+	const char *name;
+	int (*func)();
+}bind_actions[] = {
+	SET_BIND_ACTION(up),
+	SET_BIND_ACTION(down),
+	SET_BIND_ACTION(right),
+	SET_BIND_ACTION(left),
+	SET_BIND_ACTION(home),
+	SET_BIND_ACTION(end),
+	SET_BIND_ACTION(del),
+	SET_BIND_ACTION(ins),
+	{NULL, NULL}
+};
+#define SEQ_BUF_SIZE 6
+struct bind_key {
+	char seq[SEQ_BUF_SIZE];
+	const char *action;
+};
+static unsigned int bind_key_size = 0;
+static struct bind_key *bind_keys = NULL;
+
 static int
 filter_from_binds(void)
 {
 #define BND_BUF_NUM 8
+#if BND_BUF_NUM <= SEQ_BUF_SIZE
+#error "(BND_BUF_NUM > SEQ_BUF_SIZE) must be true"
+#endif
 	static char binds[BND_BUF_NUM];
 	static short lastidx = BND_BUF_NUM;
 	static short lastread = BND_BUF_NUM;
@@ -275,21 +292,112 @@ filter_from_binds(void)
 			return -1;
 		}
 		lastidx = 0;
-		if (lastread >= 3 && VNORMAL == state) {
+		if (lastread >= 3 && VNORMAL == state && bind_key_size) {
 			int i, len;
-			for (i = 0; bind_keys[i].action; i++) {
+			for (i = 0; bind_keys[i].action; ++i) {
 				/* do single check on [2] is enough, mostly. */
 				if (bind_keys[i].seq[2] == binds[2]) {
-					len = bind_keys[i].seq[3] ? 4 : 3;
-					if (!strncmp(bind_keys[i].seq, binds, len)) {
-						lastidx = len;
-						bind_action(bind_keys[i].action);
+					int find = 1;
+					for (len = 0; bind_keys[i].seq[len]; ++len) {
+						/* do not check the last '\0' here.*/
+						if (bind_keys[i].seq[len] != binds[len]) {
+							find = 0;
+						}
 					}
-					break;
+					if (find) {
+						lastidx = len;
+						for (len = 0; bind_actions[len].name; ++len) {
+							if (bind_keys[i].action == bind_actions[len].name) {
+								bind_actions[len].func();
+								bind_action_refresh();
+								break;
+							}
+						}
+						break;
+					}
 				}
 			}
 		}
 	}
+#undef BND_BUF_NUM
+}
+
+int
+x_bind_vi(const char *a1, const char *a2, int macro, int list)
+{
+	int i, idx;
+	if (!Flag(FTALKING)) {
+		return 1;
+	}
+	if (!a1) {
+		/*do list*/
+		if (list) {
+			for (i = 0; bind_actions[i].name; ++i) {
+				shprintf("%s\n", bind_actions[i].name);
+			}
+			return 0;
+		}
+		if (bind_key_size) {
+			for (i = 0; bind_keys[i].action; ++i) {
+				const char *p = bind_keys[i].seq;
+				while (*p) {
+					if (isgraph(*p)) {
+						shprintf("%c", *p);
+					} else {
+						shprintf("\\0%o", *p);
+					}
+					++p;
+				}
+				shprintf(" = %s\n", bind_keys[i].action);
+			}
+		} else {
+			shprintf("no bind\n");
+		}
+		return 0;
+	}
+	if (macro) {
+		bi_errorf("not support");
+		return 1;
+	}
+	if (strlen(a1) > SEQ_BUF_SIZE - 1) {
+		bi_errorf("wrong param");
+		return 1;
+	}
+	/* init bind_key if necessary */
+	if (NULL == bind_keys) {
+		bind_key_size = 16;
+		bind_keys = malloc(bind_key_size * sizeof(struct bind_key));
+		for (i = 0; i < bind_key_size; ++i) {
+			bind_keys[i].action = NULL;
+		}
+	}
+	/* extend bind_key */
+	for (idx = 0; bind_keys[idx].action; ++idx) {}
+	if (idx + 1 >= bind_key_size) {
+		void *ptr;
+		bind_key_size <<= 1;
+		ptr = realloc(bind_keys, bind_key_size);
+		if (ptr) {
+			bind_keys = ptr;
+			for (i = idx; i < bind_key_size; ++i) {
+				bind_keys[i].action = NULL;
+			}
+		} else {
+			bind_key_size >>= 1;
+			bi_errorf("no memory");
+			return 1;
+		}
+	}
+
+	for (i = 0; bind_actions[i].name; ++i) {
+		if (!strcmp(a2, bind_actions[i].name)) {
+			bind_keys[idx].action = bind_actions[i].name;
+			strncpy(bind_keys[idx].seq, a1, SEQ_BUF_SIZE);
+			bind_keys[idx].seq[SEQ_BUF_SIZE - 1] = '\0';
+			break;
+		}
+	}
+	return 0;
 }
 
 int

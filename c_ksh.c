@@ -1384,7 +1384,7 @@ c_complete(char **wp)
 	return 0;
 }
 #endif /* KSH_COMPLETE */
-#ifdef EMACS
+#if defined(EMACS) || defined(VI)
 int
 c_bind(char **wp)
 {
@@ -1406,13 +1406,13 @@ c_bind(char **wp)
 	wp += builtin_opt.optind;
 
 	if (*wp == NULL)	/* list all */
-		rv = x_bind((char*)NULL, (char*)NULL, 0, list);
+		rv = x_bind_vi((char*)NULL, (char*)NULL, 0, list);
 
 	for (; *wp != NULL; wp++) {
 		cp = strchr(*wp, '=');
 		if (cp != NULL)
 			*cp++ = '\0';
-		if (x_bind(*wp, cp, macro, 0))
+		if (x_bind_vi(*wp, cp, macro, 0))
 			rv = 1;
 	}
 
@@ -1453,7 +1453,7 @@ const struct builtin kshbuiltins [] = {
 #ifdef KSH_COMPLETE
 	{"complete", c_complete},
 #endif
-#ifdef EMACS
+#if defined(EMACS) || defined(VI)
 	{"bind", c_bind},
 #endif
 	{NULL, NULL}
