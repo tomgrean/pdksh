@@ -359,6 +359,16 @@ x_bind_vi(const char *a1, const char *a2, int macro, int list)
 		bi_errorf("not support");
 		return 1;
 	}
+	if (!(a2 && *a2)) {
+		/* delete a1 */
+		for (idx = i = 0; bind_keys[i].action; ++i) {
+			if (idx || !strncmp(a1, bind_keys[i].seq, SEQ_BUF_SIZE)) {
+				idx = 1;
+				bind_keys[i].action = bind_keys[i + 1].action;
+				strncpy(bind_keys[i].seq, bind_keys[i + 1].seq, SEQ_BUF_SIZE);
+			}
+		}
+	}
 	if (strlen(a1) > SEQ_BUF_SIZE - 1) {
 		bi_errorf("wrong param");
 		return 1;
