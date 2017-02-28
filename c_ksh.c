@@ -1388,9 +1388,25 @@ c_complete(char **wp)
 int
 c_bind(char **wp)
 {
+	int (*x_bind)(const char*,const char*,int,int) = NULL;
+	char *cp;
 	int rv = 0, macro = 0, list = 0;
-	 char *cp;
 	int optc;
+
+#ifdef VI
+		if (Flag(FVI)) {
+			x_bind = x_bind_vi;
+		} else
+#endif
+#ifdef EMACS
+		if (Flag(FEMACS) || Flag(FGEMACS)) {
+			x_bind = x_bind_emacs;
+		} else
+#endif
+		{
+			bi_errorf("bad edit mode\n");
+			return 1;
+		}
 
 	while ((optc = ksh_getopt(wp, &builtin_opt, "lm")) != EOF)
 		switch (optc) {
@@ -1406,13 +1422,13 @@ c_bind(char **wp)
 	wp += builtin_opt.optind;
 
 	if (*wp == NULL)	/* list all */
-		rv = x_bind_vi((char*)NULL, (char*)NULL, 0, list);
+		rv = x_bind((char*)NULL, (char*)NULL, 0, list);
 
 	for (; *wp != NULL; wp++) {
 		cp = strchr(*wp, '=');
 		if (cp != NULL)
 			*cp++ = '\0';
-		if (x_bind_vi(*wp, cp, macro, 0))
+		if (x_bind(*wp, cp, macro, 0))
 			rv = 1;
 	}
 

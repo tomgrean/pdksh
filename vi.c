@@ -13,7 +13,7 @@
 #include "edit.h"
 
 #define CMDLEN		1024
-#define Ctrl(c)		(c&0x1f)
+#define Ctrl(c)		((c)&0x1f)
 #define	is_wordch(c)	(letnum(c))
 
 struct edstate {
@@ -348,7 +348,7 @@ x_bind_vi(const char *a1, const char *a2, int macro, int list)
 					}
 					++p;
 				}
-				shprintf(" = %s\n", bind_keys[i].action);
+				shprintf("=%s\n", bind_keys[i].action);
 			}
 		} else {
 			shprintf("no bind\n");

@@ -54,7 +54,7 @@ int 	x_read(char *buf, size_t len);
 void	set_editmode(const char *ed);
 /* emacs.c: most prototypes in edit.h */
 #ifdef EMACS
-int 	x_bind(const char *a1, const char *a2, int macro,
+int 	x_bind_emacs(const char *a1, const char *a2, int macro,
 			      int list);
 #endif
 int 	x_bind_vi(const char *a1, const char *a2, int macro,
