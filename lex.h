@@ -12,23 +12,23 @@
 typedef struct source Source;
 struct source {
 	const char *str;	/* input pointer */
-	int	type;		/* input type */
 	const char *start;	/* start of current buffer */
+	const char *file;	/* input file name */
+	Area	*areap;
+	XString	xs;		/* input buffer */
+	Source *next;		/* stacked source */
 	union {
 		char **strv;	/* string [] */
 		struct shf *shf; /* shell file */
 		struct tbl *tblp; /* alias (SALIAS) */
 		char *freeme;	/* also for SREREAD */
 	} u;
-	char	ugbuf[2];	/* buffer for ungetsc() (SREREAD) and
-				 * alias (SALIAS) */
+	int	type;		/* input type */
 	int	line;		/* line number */
 	int	errline;	/* line the error occured on (0 if not set) */
-	const char *file;	/* input file name */
 	int	flags;		/* SF_* */
-	Area	*areap;
-	XString	xs;		/* input buffer */
-	Source *next;		/* stacked source */
+	char	ugbuf[2];	/* buffer for ungetsc() (SREREAD) and
+				 * alias (SALIAS) */
 };
 
 /* Source.type values */

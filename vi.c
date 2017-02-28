@@ -17,11 +17,11 @@
 #define	is_wordch(c)	(letnum(c))
 
 struct edstate {
-	int	winleft;
-	char	*cbuf;
-	int	cbufsize;
-	int	linelen;
-	int	cursor;
+	char *cbuf;
+	int winleft;
+	int cbufsize;
+	int linelen;
+	int cursor;
 };
 
 static int	vi_hook(int ch);
@@ -143,7 +143,7 @@ static void		restore_edstate(struct edstate *old, struct edstate *new);
 static void 		free_edstate(struct edstate *old);
 
 static struct edstate	ebuf;
-static struct edstate	undobuf = { 0, undocbuf, CMDLEN, 0, 0 };
+static struct edstate	undobuf = { undocbuf, 0, CMDLEN, 0, 0 };
 
 static struct edstate	*es;			/* current editor state */
 static struct edstate	*undo;
@@ -266,8 +266,8 @@ static struct {
 };
 #define SEQ_BUF_SIZE 6
 struct bind_key {
-	char seq[SEQ_BUF_SIZE];
 	const char *action;
+	char seq[SEQ_BUF_SIZE];
 };
 static unsigned int bind_key_size = 0;
 static struct bind_key *bind_keys = NULL;

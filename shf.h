@@ -43,6 +43,7 @@
 
 struct shf {
 	int flags;		/* see SHF_* */
+	int errno_;		/* saved value of errno after error */
 	unsigned char *rp;	/* read: current position in buffer */
 	int rbsize;		/* size of buffer (1 if SHF_UNBUF) */
 	int rnleft;		/* read: how much data left in buffer */
@@ -51,7 +52,6 @@ struct shf {
 	int wnleft;		/* write: how much space left in buffer */
 	unsigned char *buf;	/* buffer */
 	int fd;			/* file descriptor */
-	int errno_;		/* saved value of errno after error */
 	int bsize;		/* actual size of buf */
 	Area *areap;		/* area shf/buf were allocated in */
 };

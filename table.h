@@ -8,8 +8,8 @@
 
 struct table {
 	Area   *areap;		/* area to allocate entries */
-	short	size, nfree;	/* hash size (always 2^^n), free entries */
 	struct	tbl **tbls;	/* hashed table items */
+	short	size, nfree;	/* hash size (always 2^^n), free entries */
 };
 
 struct tbl {			/* table item */
@@ -98,8 +98,8 @@ struct tbl {			/* table item */
 
 /* Argument info.  Used for $#, $* for shell, functions, includes, etc. */
 struct arg_info {
-	int flags;	/* AF_* */
 	char **argv;
+	int flags;	/* AF_* */
 	int argc_;
 	int skip;	/* first arg is argv[0], second is argv[1 + skip] */
 };

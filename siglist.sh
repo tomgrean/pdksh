@@ -41,5 +41,5 @@ if ($2 ~ /^[0-9][0-9]*$/ && $3 == ",") {
     print;
   }
 }
-}' | grep -v '"DUMMY"'
+}' | awk -F, '/DUMMY/{next;}{sig=substr($1,2);print "{.signal= " sig " ,.name= " $2 " ,.mess= " $3 ","}'
 ecode=0
