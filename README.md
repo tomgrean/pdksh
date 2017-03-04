@@ -81,4 +81,4 @@ The builtin _complete_ has three kinds of arguments. listed below:
     All variable except \_COMPLETE within _FUNC_, should be declared with _typeset_ or _local_ keyword, making them exist only within the function.
 
 
-for now it does not support special char like space or quotations, anyway, almost nobody would like to use those chars as command line options!
+Support for bind built-in now available! It's usage is similar to emacs editing mode.
