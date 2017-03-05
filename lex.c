@@ -907,7 +907,7 @@ yyerror(const char *fmt, ...)
 Source *
 pushs(int type, Area *areap)
 {
-	 Source *s;
+	Source *s;
 
 	s = (Source *) alloc(sizeof(Source), areap);
 	s->type = type;
@@ -920,8 +920,7 @@ pushs(int type, Area *areap)
 	s->next = NULL;
 	s->areap = areap;
 	if (type == SFILE || type == SSTDIN) {
-		char *dummy;
-		Xinit(s->xs, dummy, 256, s->areap);
+		Xinit3(s->xs, 256, s->areap);
 	} else
 		memset(&s->xs, 0, sizeof(s->xs));
 	return s;

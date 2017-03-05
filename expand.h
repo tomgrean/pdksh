@@ -42,6 +42,13 @@ typedef char * XStringP;
 			xp = (xs).beg; \
 		} while (0)
 
+#define	Xinit3(xs, length, area) do { \
+			(xs).len = length; \
+			(xs).areap = (area); \
+			(xs).beg = alloc((xs).len + X_EXTRA, (xs).areap); \
+			(xs).end = (xs).beg + (xs).len; \
+		} while (0)
+
 /* stuff char into string */
 #define	Xput(xs, xp, c)	(*xp++ = (c))
 

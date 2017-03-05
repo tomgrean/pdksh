@@ -18,11 +18,10 @@ c_cd(char **wp)
 	int cdnode;			/* was a node from cdpath added in? */
 	int printpath = 0;		/* print where we cd'd? */
 	int rval;
+	int phys_path;
 	struct tbl *pwd_s, *oldpwd_s;
 	XString xs;
-	char *xp;
 	char *dir, *try, *pwd;
-	int phys_path;
 	char *cdpath;
 
 	while ((optc = ksh_getopt(wp, &builtin_opt, "LP")) != EOF)
@@ -95,23 +94,19 @@ c_cd(char **wp)
 		return 1;
 	}
 
-	Xinit(xs, xp, PATH, ATEMP);
-	/* xp will have a bogus value after make_path() - set it to 0
-	 * so that if it's used, it will cause a dump
-	 */
-	xp = (char *) 0;
+	Xinit3(xs, PATH, ATEMP);
 
 	cdpath = str_val(global("CDPATH"));
 	do {
 		cdnode = make_path(current_wd, dir, &cdpath, &xs, &phys_path);
 #ifdef S_ISLNK
 		if (physical)
-			rval = chdir(try = Xstring(xs, xp) + phys_path);
+			rval = chdir(try = Xstring(xs, dummy) + phys_path);
 		else
 #endif /* S_ISLNK */
 		{
-			simplify_path(Xstring(xs, xp));
-			rval = chdir(try = Xstring(xs, xp));
+			simplify_path(Xstring(xs, dummy));
+			rval = chdir(try = Xstring(xs, dummy));
 		}
 	} while (rval < 0 && cdpath != (char *) 0);
 
@@ -133,13 +128,13 @@ c_cd(char **wp)
 		/* Ignore failure (happens if readonly or integer) */
 		setstr(oldpwd_s, current_wd, KSH_RETURN_ERROR);
 
-	if (!ISABSPATH(Xstring(xs, xp))) {
+	if (!ISABSPATH(Xstring(xs, dummy))) {
 		pwd = (char *) 0;
 	} else
 #ifdef S_ISLNK
-	if (!physical || !(pwd = get_phys_path(Xstring(xs, xp))))
+	if (!physical || !(pwd = get_phys_path(Xstring(xs, dummy))))
 #endif /* S_ISLNK */
-		pwd = Xstring(xs, xp);
+		pwd = Xstring(xs, dummy);
 
 	/* Set PWD */
 	if (pwd) {
@@ -154,7 +149,7 @@ c_cd(char **wp)
 		setstr(pwd_s, ptmp, KSH_RETURN_ERROR);
 	} else {
 		set_current_wd(null);
-		pwd = Xstring(xs, xp);
+		pwd = Xstring(xs, dummy);
 		/* XXX unset $PWD? */
 	}
 	if (printpath || cdnode)
