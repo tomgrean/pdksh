@@ -12,8 +12,7 @@ dnl Like AC_CHECK_TYPE(), only
 dnl	- user gets to specify header file(s) in addition to the default
 dnl	  headers (<sys/types.h> and <stdlib.h>)
 dnl	- user gets to specify the message
-dnl	- word boundary checks are put at beginning/end of pattern
-dnl	  (ie, \<pattern\>)
+dnl	- word boundary checks are put at beginning/end of pattern(ie, \<pattern\>)
 dnl	- default argument is optional
 dnl uses ac_cv_type_X 'cause this is used in other autoconf macros...
 dnl KSH_CHECK_H_TYPE(type, message, header files, default)
@@ -277,7 +276,7 @@ dnl
 dnl
 dnl Check for working times (ie, it exists and doesn't always return 0).
 dnl Defines TIMES_BROKEN if it doesn't exist or if it always returns 0
-dnl (also checks for existance of getrusage if times doesn't work).
+dnl -(also checks for existance of getrusage if times doesn't work).
 dnl  XXX: requires clock_t to be typedefed/defined...
 AC_DEFUN(KSH_TIMES_CHECK,
  [AC_CACHE_CHECK(if times() is present/working, ksh_cv_func_times_ok,
@@ -574,7 +573,7 @@ dnl	BSD uses setpgrp(pid, pgrp), getpgrp(pid)
 dnl	POSIX uses setpid(pid, pgrp), getpgrp(void)
 dnl	SYSV uses setpgrp(void), getpgrp(void)
 dnl Checks for BSD first since the posix test may succeed on BSDish systems
-dnl (depends on what random value gets passed to getpgrp()).
+dnl -(depends on what random value gets passed to getpgrp()).
 AC_DEFUN(KSH_PGRP_CHECK,
  [AC_CACHE_CHECK(flavour of pgrp routines, ksh_cv_pgrp_check,
     [AC_TRY_RUN([

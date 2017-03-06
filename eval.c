@@ -152,13 +152,13 @@ expand(char *cp,	/* input word */
     XPtrV *wp,		/* output words */
     int f)		/* DO* flags */
 {
-	 int UNINITIALIZED(c);
-	 int type;	/* expansion type */
-	 int quote = 0;	/* quoted */
-	XString ds;		/* destination string */
-	 char *dp, *sp;	/* dest., source */
+	int UNINITIALIZED(c);
+	int type;	/* expansion type */
+	int quote = 0;	/* quoted */
 	int fdo, word;		/* second pass flags; have word */
 	int doblank;		/* field spliting of parameter/command subst */
+	XString ds;		/* destination string */
+	char *dp, *sp;	/* dest., source */
 	Expand x;		/* expansion variables */
 	SubType st_head, *st;
 	int UNINITIALIZED(newlines); /* For trailing newlines in COMSUB */

@@ -14,6 +14,7 @@
  * Description of a command or an operation on commands.
  */
 struct op {
+	int	lineno;			/* TCOM/TFUNC: LINENO for this */
 	short	type;			/* operation type, see below */
 	union { /* WARNING: newtp(), tcopy() use evalflags = 0 to clear union */
 		short	evalflags;	/* TCOM: arg expansion eval() flags */
@@ -22,13 +23,12 @@ struct op {
 	char  **args;			/* arguments to a command */
 	char  **vars;			/* variable assignments */
 	struct ioword	**ioact;	/* IO actions (eg, < > >>) */
-	struct op *left, *right; 	/* descendents */
-	char   *str;			/* word for case; identifier for for,
+	struct op *left, *right;	/* descendents */
+	char   *str;	/* word for case; identifier for for,
 					 * select, and functions;
 					 * path to execute for TEXEC;
 					 * time hook for TCOM.
 					 */
-	int	lineno;			/* TCOM/TFUNC: LINENO for this */
 };
 
 /* Tree.type values */

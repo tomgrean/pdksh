@@ -518,14 +518,14 @@ extern int shl_stdout_ok;
  * trap handlers
  */
 typedef struct trap {
-	int	signal;		/* signal number */
 	const char *name;	/* short name */
 	const char *mess;	/* descriptive name */
 	char   *trap;		/* trap command */
-	int	volatile set;	/* trap pending */
-	int	flags;		/* TF_* */
 	handler_t cursig;	/* current handler (valid if TF_ORIG_* set) */
 	handler_t shtrap;	/* shell signal handler */
+	int	signal;		/* signal number */
+	int	volatile set;	/* trap pending */
+	int	flags;		/* TF_* */
 } Trap;
 
 /* values for Trap.flags */
@@ -638,8 +638,8 @@ struct coproc {
 	int	read;		/* pipe from co-process's stdout */
 	int	readw;		/* other side of read (saved temporarily) */
 	int	write;		/* pipe to co-process's stdin */
-	Coproc_id id;		/* id of current output pipe */
 	int	njobs;		/* number of live jobs using output pipe */
+	Coproc_id id;		/* id of current output pipe */
 	void    *job;           /* 0 or job of co-process using input pipe */
 };
 extern struct coproc coproc;
