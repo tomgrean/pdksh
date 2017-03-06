@@ -103,15 +103,14 @@ static int ignore_backslash_newline;
  * for example, "${var:-${PWD}}", and "$(size $(whence ksh))".
  * hence the state stack.
  */
-
 int
 yylex(int cf)
 {
 	Lex_state states[STATE_BSIZE], *statep;
 	State_info state_info;
-	 int c, state;
+	int c, state;
 	XString ws;		/* expandable output word */
-	 char *wp;	/* output word pointer */
+	char *wp;	/* output word pointer */
 	char *sp, *dp;
 	int c2;
 
@@ -903,11 +902,10 @@ yyerror(const char *fmt, ...)
 /*
  * input for yylex with alias expansion
  */
-
 Source *
 pushs(int type, Area *areap)
 {
-	 Source *s;
+	Source *s;
 
 	s = (Source *) alloc(sizeof(Source), areap);
 	s->type = type;
@@ -922,8 +920,9 @@ pushs(int type, Area *areap)
 	if (type == SFILE || type == SSTDIN) {
 		char *dummy;
 		Xinit(s->xs, dummy, 256, s->areap);
-	} else
+	} else {
 		memset(&s->xs, 0, sizeof(s->xs));
+	}
 	return s;
 }
 

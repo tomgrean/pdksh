@@ -623,7 +623,7 @@ c_set(char **wp)
 {
 	int argi, setargs;
 	struct block *l = e->loc;
-	 char **owp = wp;
+	char **owp = wp;
 
 	if (wp[1] == NULL) {
 		static const char *const args [] = { "set", "-", NULL };
