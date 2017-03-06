@@ -919,7 +919,7 @@ pushs(int type, Area *areap)
 	s->areap = areap;
 	if (type == SFILE || type == SSTDIN) {
 		Xinit3(s->xs, 256, s->areap);
-	} else
+	} else {
 		memset(&s->xs, 0, sizeof(s->xs));
 	}
 	return s;
