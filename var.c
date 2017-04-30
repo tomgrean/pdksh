@@ -426,10 +426,22 @@ getint(struct tbl *vp, long *nump)
 	base = 10;
 	num = 0;
 	neg = 0;
-	for (c = *s++; c ; c = *s++) {
-		if (c == '-') {
-			neg++;
-		} else if (c == '#') {
+
+	for (c = *s++; c; c = *s++) {
+		if (num == 0) {
+			if (c == '-') {
+				neg++;
+			} else if (c == '0') {
+				base = 8;
+				have_base = 1;
+				//continue;
+			} else if (c == 'x') {
+				base = 16;
+				have_base = 1;
+				continue;
+			}
+		}
+		if (c == '#') {
 			base = (int) num;
 			if (have_base || base < 2 || base > 36)
 				return -1;
