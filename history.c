@@ -580,21 +580,22 @@ init_histvec(void)
 # ifdef EASY_HISTORY
 /*
  * save command in history
+ * lno: ignored (compatibility with COMPLEX_HISTORY)
+ * dowrite: ignored (compatibility with COMPLEX_HISTORY)
  */
 void
-histsave(int lno, /* ignored (compatibility with COMPLEX_HISTORY) */
-const char *cmd,
-int dowrite)/* ignored (compatibility with COMPLEX_HISTORY) */
+histsave(int lno, const char *cmd, int dowrite)
 {
 	char **hp = histptr;
 	char *cp;
 	int len;
 
 	{
-		const char *np = cmd, *op = *hp;
+		const char *np, *op;
 		int flag = -1;
-		for (; *np; ++np, ++op) {
-			if (flag) {
+
+		for (np = cmd, op = *hp; *np; ++np, ++op) {
+			if (flag < 0) {
 				if (*np != *op) {
 					if (*op) {
 						flag = 0;
@@ -606,7 +607,7 @@ int dowrite)/* ignored (compatibility with COMPLEX_HISTORY) */
 		}
 		len = np - cmd;
 		if (flag < 0 || len - flag < 2) {
-				return;
+			return;
 		}
 	}
 
