@@ -590,38 +590,30 @@ histsave(int lno, const char *cmd, int dowrite)
 	char *cp;
 	int len;
 
-	{
-		const char *np, *op;
-		int flag = -1;
+	if (cmd == NULL || (len = strlen(cmd)) <= 0) {
+		return;
+	}
 
-		for (np = cmd, op = *hp; *np; ++np, ++op) {
-			if (flag < 0) {
-				if (*np != *op) {
-					if (*op) {
-						flag = 0;
-					} else {
-						flag = np - cmd;
-					}
-				}
-			}
-		}
-		len = np - cmd;
-		if (flag < 0 || len - flag < 2) {
+	cp = str_nsave(cmd, len, APERM);
+	/* trash trailing newline but allow imbedded newlines */
+	if (cp[len - 1] == '\n') {
+		--len;
+		cp[len] = '\0';
+	}
+
+	if (histptr >= history) {
+		if (!strncmp(*hp, cp, len + 1)) {
+			afree(cp, APERM);
 			return;
 		}
 	}
 
 	if (++hp >= history + histsize) { /* remove oldest command */
-		afree((void*)history[0], APERM);
-		memmove(history, history + 1,
-			sizeof(history[0]) * (histsize - 1));
+		afree(history[0], APERM);
+		memmove(history, history + 1, sizeof(history[0]) * (histsize - 1));
 		hp = &history[histsize - 1];
 	}
-	*hp = str_save(cmd, APERM);
-	/* trash trailing newline but allow imbedded newlines */
-	cp = *hp + len;
-	if (cp > *hp && cp[-1] == '\n')
-		cp[-1] = '\0';
+	*hp = cp;
 	histptr = hp;
 }
 
