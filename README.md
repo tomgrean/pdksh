@@ -57,9 +57,12 @@ function _systemctl {
 	esac
 }
 #key bindings
-bind $(echo '\033[A=up' '\033[B=down' '\033[C=right' '\033[D=left')
-bind $(echo '\033[H=home' '\033[F=end' '\033[5~=up' '\033[6~=down')
-bind $(echo '\033[3~=del' '\033[2~=ins')
+bind '\033[A=up'
+bind '\033[B=down'
+bind '\033[C=right'
+bind '\033[D=left'
+bind '\033[H=home' '\033[F=end' '\033[5~=up' '\033[6~=down'
+bind '\033[3~=del' '\033[2~=ins'
 ```
 As you may already figure it out. There is a new builtin command _complete_. We use the command to make customized tab-completion work as expected.
 

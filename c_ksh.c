@@ -1380,6 +1380,46 @@ c_complete(char **wp)
 }
 #endif /* KSH_COMPLETE */
 #if defined(EMACS) || defined(VI)
+static void
+escape_oct(char *str)
+{
+	char *pnext;
+	char *pbegin = str;
+
+	for (pnext = str; *pnext; ++pnext, ++pbegin) {
+		if (*pnext == '\\') {
+			switch (*++pnext) {
+			case 'r':
+				*pbegin = '\r';
+				break;
+			case 'n':
+				*pbegin = '\n';
+				break;
+			case 't':
+				*pbegin = '\t';
+				break;
+			case '0':{
+					char x = 0, cnt = 0;
+					++pnext;
+					while (cnt < 3 && *pnext >= '0' && *pnext < '8') {
+						x = x * 8 + *pnext - '0';
+						++cnt;
+						++pnext;
+					}
+					--pnext;
+					*pbegin = x;
+				}
+				break;
+			default:
+				*pbegin = *pnext;
+				break;
+			}
+		} else if (pbegin != pnext) {
+			*pbegin = *pnext;
+		}
+	}
+	*pbegin = '\0';
+}
 int
 c_bind(char **wp)
 {
@@ -1420,6 +1460,7 @@ c_bind(char **wp)
 		rv = x_bind((char*)NULL, (char*)NULL, 0, list);
 
 	for (; *wp != NULL; wp++) {
+		escape_oct(*wp);
 		cp = strchr(*wp, '=');
 		if (cp != NULL)
 			*cp++ = '\0';

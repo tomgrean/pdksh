@@ -368,6 +368,7 @@ x_bind_vi(const char *a1, const char *a2, int macro, int list)
 				strncpy(bind_keys[i].seq, bind_keys[i + 1].seq, SEQ_BUF_SIZE);
 			}
 		}
+		return 0;
 	}
 	if (strlen(a1) > SEQ_BUF_SIZE - 1) {
 		bi_errorf("wrong param");
@@ -382,7 +383,11 @@ x_bind_vi(const char *a1, const char *a2, int macro, int list)
 		}
 	}
 	/* extend bind_key */
-	for (idx = 0; bind_keys[idx].action; ++idx) {}
+	for (idx = 0; bind_keys[idx].action; ++idx) {
+		if (!strncmp(a1, bind_keys[idx].seq, SEQ_BUF_SIZE)) {
+			break;
+		}
+	}
 	if (idx + 1 >= bind_key_size) {
 		void *ptr;
 		bind_key_size <<= 1;
