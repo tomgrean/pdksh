@@ -519,14 +519,15 @@ x_file_glob(int flags, const char *str, int slen, char ***wordsp)
 
 	toglob = add_glob(str, slen);
 
-	/* remove all escaping backward slashes */
+	/* remove all escaping backward slashes, except ` and $ */
 	escaping = 0;
 	for(i = 0, idx = 0; toglob[i]; i++) {
-		if (toglob[i] == '\\' && !escaping) {
+		if (toglob[i] == '\\' &&
+				!escaping &&
+				!(toglob[i+1] == '`' || toglob[i+1] == '$')) {
 			escaping = 1;
 			continue;
 		}
-
 		toglob[idx] = toglob[i];
 		idx++;
 		if (escaping) escaping = 0;
@@ -721,6 +722,8 @@ x_locate_word(const char *buf, int buflen, int pos, int *startp,
 			end++;
 	}
 
+	if (start)
+		*is_commandp = 0;
 	*startp = start;
 	return end - start;
 }
