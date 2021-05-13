@@ -21,7 +21,6 @@ PS1='$USER@${PWD}$ '
 complete 'sudo=C'
 complete 'git=S:add,:status,:commit,clone,:diff,:log'
 complete 'svn=S:add,:status,:commit,checkout,@--diff-cmd,:diff,:log'
-complete 'systemctl=F_systemctl'
 function _systemctl {
 	typeset ACT="enable disable start stop restart status reload"
 	case $# in
@@ -56,6 +55,37 @@ function _systemctl {
 		;;
 	esac
 }
+complete 'systemctl=F_systemctl'
+
+function _modprobe {
+	if [[ $# -le 0 ]]; then return; fi
+	while [[ x$1 = x-* ]]; do
+		shift
+	done
+	_COMPLETE=$(find /lib/modules/$(uname -r) -type f -name "$1*.ko" -printf '%f\n'|sed 's/\.ko//g')
+}
+complete 'modprobe=F_modprobe'
+
+function _manpage {
+	typeset manid='?'
+	if [[ $# -ge 1 && $1 = [0-9] ]]; then
+		manid=$1
+		shift
+	fi
+	# only for non-empty completion.
+	if [[ $# == 1 && -n $1 ]]; then
+		if [[ ${1##*/} != $1 ]]; then
+			_COMPLETE=$(echo $1*)
+		else
+			_COMPLETE=$(find /usr/share/man/man$manid -name "$1*" -printf '%f\n'|sed 's/\.[0-9]\..*//g'|sort|uniq)
+		fi
+	else
+		_COMPLETE=
+	fi
+}
+complete 'man=F_manpage'
+
+
 #key bindings
 bind '\033[A=up'
 bind '\033[B=down'
@@ -84,4 +114,4 @@ The builtin _complete_ has three kinds of arguments. listed below:
     All variable except \_COMPLETE within _FUNC_, should be declared with _typeset_ or _local_ keyword, making them exist only within the function.
 
 
-Support for bind built-in now available! It's usage is similar to emacs editing mode.
+Support for bind built-in now available! It's usage is similar to emacs editing mode. Currently supported binding name include *up*, *down*, *right*, *left*, *home*, *end*, *del*, *ins*.
