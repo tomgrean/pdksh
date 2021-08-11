@@ -67,20 +67,49 @@ function _modprobe {
 complete 'modprobe=F_modprobe'
 
 function _manpage {
-	typeset manid='?'
-	if [[ $# -ge 1 && $1 = [0-9] ]]; then
-		manid=$1
-		shift
+	typeset manid='*'
+	typeset search=x
+	typeset ACT='-a -f -k -K -l 1 2 3 4 5 6 7 8 9'
+	_COMPLETE=
+	if [[ $# -gt 1 ]]; then
+		case "$1" in
+		([0-9]?(p|n))
+			manid=$1
+			shift
+			;;
+		(-[af])
+			shift
+			;;
+		(-[kK])
+			search=a
+			shift
+			;;
+		(-l)
+			search=l
+			shift
+			;;
+		esac
+	else
+		case z$1 in
+		z[0-9])
+			_COMPLETE=$1
+			;;
+		z-)
+			_COMPLETE='-a -f -k -K -l'
+			;;
+		z)
+			_COMPLETE=$ACT
+			;;
+		esac
 	fi
-	# only for non-empty completion.
-	if [[ $# == 1 && -n $1 ]]; then
-		if [[ ${1##*/} != $1 ]]; then
+	if [[ -z $_COMPLETE ]]; then
+		if [[ ${1##*/} != $1 || $search = l ]]; then
 			_COMPLETE=$(echo $1*)
+		elif [[ $search = a ]]; then
+			_COMPLETE="$@"
 		else
 			_COMPLETE=$(find /usr/share/man/man$manid -name "$1*" -printf '%f\n'|sed 's/\.[0-9]\..*//g'|sort|uniq)
 		fi
-	else
-		_COMPLETE=
 	fi
 }
 complete 'man=F_manpage'
