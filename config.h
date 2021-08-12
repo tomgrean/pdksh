@@ -65,7 +65,7 @@
 /* #undef STAT_MACROS_BROKEN */
 
 /* Define if `sys_siglist' is declared by <signal.h>.  */
-#define SYS_SIGLIST_DECLARED 1
+//#define SYS_SIGLIST_DECLARED 1
 
 /* Define if you can safely include both <sys/time.h> and <time.h>.  */
 #define TIME_WITH_SYS_TIME 1
@@ -146,7 +146,7 @@
 /* #undef SYS_ERRLIST_DECLARED */
 
 /* Define if sys_siglist[] is in the C library */
-#define HAVE_SYS_SIGLIST 1
+//#define HAVE_SYS_SIGLIST 1
 
 /* Define if you have a sane <termios.h> header file */
 #define HAVE_TERMIOS_H 1
