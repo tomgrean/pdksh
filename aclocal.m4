@@ -1175,7 +1175,6 @@ dnl
 dnl Modified AC_LANG_C, AC_LANG_CPLUSPLUS, AC_TRY_RUN to handle executable
 dnl extensions.
 undefine([AC_LANG_C])dnl
-undefine([AC_LANG_CPLUXPLUS])dnl
 undefine([AC_TRY_RUN])dnl
 dnl AC_LANG_C()
 AC_DEFUN(AC_LANG_C,
