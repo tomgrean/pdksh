@@ -35,7 +35,7 @@ int main()
 			}
 		}
 		if (not_found) {
-			printf("{.signal=%d,.name=(char *)0,.mess=\"Signal %d\"},\n", n, n);
+			printf("{.signal=%d,.name=(char *)0,.mess=\"Signal:%d\"},\n", n, n);
 		}
 	}
 	return 0;
