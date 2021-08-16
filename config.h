@@ -195,7 +195,7 @@
 /* #undef HPUX_GETWD_BUG */
 
 /* Default PATH (see comments in configure.in for more details) */
-#define DEFAULT_PATH "/bin:/usr/bin:/usr/ucb"
+#define DEFAULT_PATH "/bin:/usr/bin:/usr/local/bin"
 
 /* Include ksh features? (see comments in configure.in for more details) */
 #define KSH 1

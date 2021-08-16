@@ -48,12 +48,12 @@ OBJS = alloc.o c_ksh.o c_sh.o c_test.o c_ulimit.o edit.o emacs.o \
 HDRS = c_test.h edit.h expand.h ksh_dir.h ksh_limval.h ksh_stat.h ksh_time.h \
 	ksh_times.h ksh_wait.h lex.h proto.h sh.h shf.h sigact.h \
 	table.h tree.h tty.h
-DISTFILES = $(SRCS) $(HDRS) ksh.Man Makefile.in configure.in \
-	config.h.in conf-end.h acconfig.h aclocal.m4 emacs-gen.sh \
+DISTFILES = $(SRCS) $(HDRS) ksh.Man \
+	conf-end.h acconfig.h \
 	mkinstalldirs install-sh new-version.sh siglist.in siglist.sh mkman \
 	check-fd.c check-pgrp.c check-sigs.c \
 	README NEWS CONTRIBUTORS LEGAL PROJECTS INSTALL NOTES BUG-REPORTS \
-	IAFA-PACKAGE ChangeLog ChangeLog.0 configure stamp-h.in
+	IAFA-PACKAGE ChangeLog ChangeLog.0 stamp-h.in
 # ETCFILES also disted, but handled differently
 ETCFILES = etc/ksh.kshrc etc/profile etc/sys_config.sh
 # MISCFILES also disted, but handled differently
@@ -67,8 +67,7 @@ TESTFILES = tests/README tests/th tests/th-sh tests/alias.t tests/arith.t \
 	tests/integer.t tests/lineno.t tests/read.t tests/regress.t \
 	tests/syntax.t tests/unclass1.t tests/unclass2.t \
 	tests/version.t 
-# OS2FILES also disted, but handled differently
-OS2FILES = os2/Makefile os2/config.h os2/config.status os2/configure.cmd \
+OS2FILES = os2/Makefile os2/config.h os2/config.status \
 	os2/emacs.out os2/kshrc.ksh os2/make.sed os2/os2.c os2/os2siglist.out \
 	os2/README.os2 os2/NEWS.os2 os2/os2bugs os2/th.cmd os2/config.cache
 
@@ -76,7 +75,7 @@ all: $(SHELL_PROG)$(exe_suffix) $(SHELL_PROG).1
 
 # This shouldn't be first - some makes don't know about PRECIOUS and assume it
 # is the default target.
-.PRECIOUS: configure config.h.in Makefile config.status
+.PRECIOUS: Makefile
 
 .c.o:
 	$(CC) -c $(CPPFLAGS) $(DEFS) -I. -I$(srcdir) $(CFLAGS) $<
@@ -111,27 +110,6 @@ $(SHELL_PROG).1: $(srcdir)/ksh.Man
 
 info:
 	@echo "No info (yet)"
-
-#dvi:
-#
-#$(srcdir)/configure: configure.in aclocal.m4
-#	cd $(srcdir) && autoconf
-#
-#$(srcdir)/config.h.in: stamp-h.in
-#$(srcdir)/stamp-h.in: configure.in aclocal.m4 acconfig.h
-#	-cd $(srcdir) && autoheader
-#	date > $(srcdir)/stamp-h.in
-#
-#config.h: stamp-h
-#stamp-h: config.h.in config.status
-#	CONFIG_FILES="" CONFIG_HEADERS=config.h ./config.status
-#	date > stamp-h
-
-#Makefile: Makefile.in config.status
-#	CONFIG_FILES=Makefile CONFIG_HEADERS= ./config.status
-
-#config.status: configure
-#	LDSTATIC="$(LDSTATIC)" ./config.status --recheck
 
 # two steps to prevent the creation of a bogus siglist.out
 siglist.out: config.h sh.h siglist.in siglist.sh
