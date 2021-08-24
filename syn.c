@@ -247,22 +247,48 @@ get_command(int cf)
 				break;
 
 			  case '(':
-				/* Check for "> foo (echo hi)", which at&t ksh
-				 * allows (not POSIX, but not disallowed)
-				 */
-				afree(t, ATEMP);
-				if (XPsize(args) == 0 && XPsize(vars) == 0) {
+				if (XPsize(args) == 0 && XPsize(vars) == 1
+					&& is_wdvarassign(yylval.cp)) {
+					static const char setA_cmd0[] = {CHAR, 's', CHAR, 'e', CHAR, 't', EOS};
+					static const char setA_cmd1[] = {CHAR, '-', CHAR, 'A', EOS};
+					static const char setA_cmd2[] = {CHAR, '-', CHAR, '-', EOS};
+					char *tcp;
+					/* wdarrassign: foo=(bar) */
 					ACCEPT;
-					goto Subshell;
+
+					/* manipulate the vars string */
+					tcp = XPptrv(vars)[0];
+					/* 'varname=' -> 'varname' */
+					tcp[wdscan(tcp, EOS) - tcp - 3] = EOS;
+
+					/* construct new args strings */
+					XPput(args, wdcopy(setA_cmd0, ATEMP));
+					XPput(args, wdcopy(setA_cmd1, ATEMP));
+					XPput(args, tcp);
+					XPput(args, wdcopy(setA_cmd2, ATEMP));
+
+					while (token(CONTIN) == LWORD)
+						XPput(args, yylval.cp);
+					if (symbol != ')')
+						syntaxerr(NULL);
+				} else {
+					/* Check for "> foo (echo hi)", which at&t ksh
+					 * allows (not POSIX, but not disallowed)
+					 */
+					afree(t, ATEMP);
+					if (XPsize(args) == 0 && XPsize(vars) == 0) {
+						ACCEPT;
+						goto Subshell;
+					}
+					/* Must be a function */
+					if (iopn != 0 || XPsize(args) != 1
+					    || XPsize(vars) != 0)
+						syntaxerr((char *) 0);
+					ACCEPT;
+					/*(*/
+					musthave(')', 0);
+					t = function_body(XPptrv(args)[0], false);
 				}
-				/* Must be a function */
-				if (iopn != 0 || XPsize(args) != 1
-				    || XPsize(vars) != 0)
-					syntaxerr((char *) 0);
-				ACCEPT;
-				/*(*/
-				musthave(')', 0);
-				t = function_body(XPptrv(args)[0], false);
 				goto Leave;
 
 			  default:
