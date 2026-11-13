@@ -323,7 +323,7 @@ expand(char *cp,	/* input word */
 						 * expected)
 						 */
 						*dp++ = MAGIC;
-						*dp++ = '@' + 0x80;
+						*dp++ = (char)('@' + 0x80);
 						break;
 					  case '=':
 						/* Enabling tilde expansion
@@ -1147,7 +1147,8 @@ copy_non_glob(XString *xs, char **xpp, char *p)
 char *
 debunk(char *dp, const char *sp)
 {
-	char *d, *s;
+	const char *s;
+	char *d;
 
 	if ((s = strchr(sp, MAGIC))) {
 		memcpy(dp, sp, s - sp);

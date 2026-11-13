@@ -378,7 +378,7 @@ set_editmode(const char *ed)
 			FVI,
 #endif
 		    };
-	char *rcp;
+	const char *rcp;
 	int i;
 
 	if ((rcp = ksh_strrchr_dirsep(ed)))

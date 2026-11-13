@@ -990,7 +990,7 @@ int
 ksh_getopt(char **argv, Getopt *go, const char *options)
 {
 	char c;
-	char *o;
+	const char *o;
 
 	if (go->p == 0 || (c = argv[go->optind - 1][go->p]) == '\0') {
 		char *arg = argv[go->optind], flag = arg ? *arg : '\0';

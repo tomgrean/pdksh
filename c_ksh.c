@@ -344,6 +344,20 @@ c_print(char **wp)
 							break;
 					}
 					break;
+				case 'x':/* \xHH hexadecimal */
+					c = 0;
+					for (i = 0; i < 2; i++) {
+						if (*s >= '0' && *s <= '9') {
+							c = c*16 + *s++ - '0';
+						} else if (*s >= 'a' && *s <= 'f') {
+							c = c*16 + *s++ - ('a' - 10);
+						} else if (*s >= 'A' && *s <= 'F') {
+							c = c*16 + *s++ - ('A' - 10);
+						} else {
+							break;
+						}
+					}
+					break;
 				case '\0': s--; c = '\\'; break;
 				case '\\': break;
 				default:
